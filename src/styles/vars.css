@@ -1,0 +1,26 @@
+:root {
+  /* Colors */
+  --grayish-cyan-color: #DAE7E6;
+  --dark-blue-color: #002855;
+  --black-color: #001329;
+  --gray-color: #E5E5E5;
+  --light-gray-color: #E9EFF6;
+  --yellow-color: #FFD405;
+  --white-color: #FFFFFF;
+
+  /* Gradients */
+  --footer-gradient: linear-gradient(90deg, #293784 -0.52%, #008884 100%);
+
+  /* Shadows */
+  --card-shadow: 0px 4px 10px rgba(166, 181, 199, 0.4);
+  --header-shadow: 0px 0px 27px #A6B5C7;
+  --footer-shadow: 0px 0px 30px rgba(178, 184, 191, 0.3);
+
+  /* Widths */
+  --sidebar-width: 260px;
+
+  /* Heights */
+  --header-inner-height: 80px;
+  --header-full-height: var(--header-inner-height);
+  --footer-height: 56px;
+}

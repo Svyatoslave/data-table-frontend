@@ -1,0 +1,25 @@
+/* Museo Sans Cyrl */
+
+@font-face {
+  font-family: "Museo Sans Cyrl";
+  src: url("../assets/fonts/museo-sans-cyrl/300.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Museo Sans Cyrl";
+  src: url("../assets/fonts/museo-sans-cyrl/500.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Museo Sans Cyrl";
+  src: url("../assets/fonts/museo-sans-cyrl/700.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

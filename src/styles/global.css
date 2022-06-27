@@ -1,0 +1,9 @@
+html {
+  max-width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+* {
+  font-family: "Museo Sans Cyrl";
+}
