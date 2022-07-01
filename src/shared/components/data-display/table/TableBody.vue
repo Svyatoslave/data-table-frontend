@@ -1,4 +1,5 @@
 <template>
+  <LoadingOverlay :visible="loading" class="table-body__loading-overlay" />
   <table v-if="isNonNullable(rows)" class="table-body__wrapper">
     <tbody ref="tableRef" class="table-body">
       <TableBodyRow
@@ -30,15 +31,22 @@ import {
   type GetRowKeyFn,
   type TableSlotColumn,
 } from "@/shared/components/data-display";
+import { LoadingOverlay } from "@/shared/components/overlay";
 import { createMeasurableProp } from "@/shared/utils/styles";
 import type { Optional } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
+import {
+  documentDisabledScroll,
+  documentEnabledScroll,
+  documentScrollToTop,
+} from "@/shared/utils/document";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DefaultRowData = any;
 
 export interface TableBody<T extends RowData = RowData> {
   rows: Optional<T[]>;
+  loading: boolean;
   columns: TableColumns<DefaultRowData>;
   getRowKey: GetRowKeyFn<DefaultRowData>;
 }
@@ -56,6 +64,19 @@ const headerFullHeightVar = useCssVar("--table-width");
 watch(width, (currentWidth) => {
   headerFullHeightVar.value = createMeasurableProp(currentWidth);
 });
+
+watch(
+  [() => props.loading, () => props.rows],
+  ([currentLoading]) => {
+    if (currentLoading) {
+      documentDisabledScroll();
+      documentScrollToTop();
+    } else {
+      documentEnabledScroll();
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>
@@ -63,6 +84,13 @@ watch(width, (currentWidth) => {
   display: flex;
   flex-direction: column;
   gap: 10px 0;
+}
+
+.table-body__loading-overlay {
+  position: fixed;
+  margin-top: var(--header-full-height);
+  margin-left: var(--sidebar-width);
+  margin-bottom: var(--footer-height);
 }
 
 .table-body__wrapper {

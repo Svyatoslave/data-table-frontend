@@ -1,13 +1,15 @@
 <template>
-  <div class="dafm">
+  <div v-if="applicationForm !== null" class="dafm">
     <div class="dafm__content">
       <ETypography class="dafm__text" variant="body2">ID:</ETypography>
-      <ETypography class="dafm__text" variant="body2"> 0005457 </ETypography>
+      <ETypography class="dafm__text" variant="body2">{{
+        applicationForm.id
+      }}</ETypography>
       <ETypography class="dafm__text" variant="body2">
         Тип процедуры:
       </ETypography>
       <ETypography class="dafm__text" variant="body2">
-        Предоставление права пользования недрами
+        {{ applicationForm.typeApplicationForm }}
       </ETypography>
     </div>
     <ETypography variant="title2" class="dafm__subtitle">
@@ -59,6 +61,18 @@
 <script setup lang="ts">
 import { ETypography } from "@/shared/components/data-display";
 import { FileLink } from "@/shared/components/navigation";
+import type { Nullable } from "@/shared/types/utility";
+
+export interface DetailApplicationForm {
+  id: number;
+  typeApplicationForm: string;
+}
+
+export interface DetailApplicationFormModalProps {
+  applicationForm: Nullable<DetailApplicationForm>;
+}
+
+defineProps<DetailApplicationFormModalProps>();
 </script>
 
 <style scoped>

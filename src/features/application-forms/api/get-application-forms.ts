@@ -29,7 +29,7 @@ export const getApplicationForms = async (
     );
 
 interface ApplicationFormDto {
-  id: string;
+  id: number;
   type_application_form: string;
   complainant: string;
   created_at: string;

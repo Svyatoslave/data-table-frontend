@@ -23,7 +23,7 @@ import SidebarFiller from "./SidebarFiller.vue";
 
 <style scoped>
 .footer {
-  position: fixed;
+  position: sticky;
   bottom: 0;
   display: flex;
   align-items: center;
@@ -31,7 +31,7 @@ import SidebarFiller from "./SidebarFiller.vue";
   height: 56px;
   background: var(--footer-gradient);
   box-shadow: var(--footer-shadow);
-  z-index: 2;
+  z-index: 5000;
 }
 
 .footer__inner {

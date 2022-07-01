@@ -4,16 +4,15 @@
       <div v-show="visible" class="modal">
         <div ref="containerRef" class="modal__container">
           <div class="modal__header">
-            <ETypography variant="title1" class="modal__title"
-              >Подробная информация о заявке</ETypography
-            >
+            <ETypography variant="title1" class="modal__title">
+              {{ title }}
+            </ETypography>
             <CrossIcon
               class="modal__button"
               @click="emit('update:visible', false)"
             />
           </div>
           <div class="modal__body">
-            <DetailApplicationFormModal></DetailApplicationFormModal>
             <slot></slot>
           </div>
         </div>
@@ -29,7 +28,6 @@ import { onClickOutside, useEventListener } from "@vueuse/core";
 import { ETypography } from "@/shared/components/data-display";
 
 import { CrossIcon } from "@/shared/components/icons";
-import { DetailApplicationFormModal } from "@/features/application-forms/components";
 import {
   documentDisabledScroll,
   documentEnabledScroll,

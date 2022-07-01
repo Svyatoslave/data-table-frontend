@@ -7,3 +7,4 @@ export { default as LoadingIcon } from "./LoadingIcon.vue";
 export { default as ArrowIcon } from "./ArrowIcon.vue";
 export { default as CrossIcon } from "./CrossIcon.vue";
 export { default as DownloadIcon } from "./DownloadIcon.vue";
+export { default as LinkIcon } from "./LinkIcon.vue";

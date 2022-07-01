@@ -21,7 +21,6 @@ import { ContentContainer } from "@/shared/components/layouts";
     100vh - var(--footer-height) - var(--header-full-height) - 80px
   );
   margin-left: var(--sidebar-width);
-  margin-bottom: var(--footer-height);
   padding-top: 40px;
   padding-bottom: 40px;
 }

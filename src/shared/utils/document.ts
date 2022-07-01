@@ -15,3 +15,10 @@ export const documentEnabledScroll = () => {
     htmlElem.style.marginRight = "0";
   }
 };
+
+export const documentScrollToTop = () => {
+  document.body.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+};

@@ -3,7 +3,11 @@
     <ContentContainer class="header__container">
       <div class="header__inner">
         <div class="header__logos">
-          <img src="@/assets/images/mono-logo.png" alt="mono-logo" />
+          <img
+            src="@/assets/images/mono-logo.png"
+            class="header__mono-logo"
+            alt="mono-logo"
+          />
           <EDivider flex-item orientation="vertical" />
           <ETypography
             variant="title4"
@@ -16,13 +20,13 @@
         <div class="header__info">
           <slot name="actions"></slot>
           <div class="header__actions">
-            <EBadge>
+            <EBadge class="header__icon">
               <template #content>6</template>
               <template #default>
                 <BellIcon />
               </template>
             </EBadge>
-            <UserIcon />
+            <UserIcon class="header__icon" />
           </div>
         </div>
       </div>
@@ -90,5 +94,9 @@ watch(height, (currentHeight) => {
 .header__actions {
   display: flex;
   gap: 35px;
+}
+
+.header__icon:hover {
+  cursor: pointer;
 }
 </style>

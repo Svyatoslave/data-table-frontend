@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import ApplicationFormsView from "@/features/application-forms/views/ApplicationFormsTableView.vue";
+import ApplicationFormsView from "@/features/application-forms/views/ApplicationFormsView.vue";
 import { authGuard } from "@/features/auth";
 
 const router = createRouter({
