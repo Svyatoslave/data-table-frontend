@@ -29,7 +29,7 @@ withDefaults(defineProps<ArrowIconProps>(), {
 });
 </script>
 
-<style>
+<style scoped>
 .arrow-icon--direction-top {
   transform: rotate(-90deg);
 }

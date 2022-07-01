@@ -40,8 +40,8 @@
     <NDivider />
     <NButton
       block
+      disabled
       tag="a"
-      href="https://lk.gosuslugi.ru/"
       size="large"
       class="login-form__button-esia"
     >
@@ -53,22 +53,15 @@
 <script setup lang="ts">
 import { NFormItem, NInput, NButton, NDivider } from "naive-ui";
 import { useField, useForm } from "vee-validate";
-import { object, string } from "yup";
+import { object, string, type InferType } from "yup";
 
 import { useAuthStore } from "@/stores/auth";
-
-interface LoginValues {
-  login: string;
-  password: string;
-}
 
 interface LoginViewEmits {
   (e: "success"): void;
 }
 
 const emit = defineEmits<LoginViewEmits>();
-
-const authStore = useAuthStore();
 
 const schema = object({
   login: string()
@@ -78,6 +71,10 @@ const schema = object({
     .required("Это обязательное поле")
     .min(8, "Мин кол-во символов ${min}"),
 });
+
+type LoginValues = InferType<typeof schema>;
+
+const authStore = useAuthStore();
 
 const { handleSubmit, errors, isSubmitting } = useForm<LoginValues>({
   validationSchema: schema,

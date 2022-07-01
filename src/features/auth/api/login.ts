@@ -1,11 +1,14 @@
 import { axios } from "@/lib/axios";
 
-import type { AuthUser } from "@/features/auth/types";
+import { IDENTITY_API_URL } from "@/shared/config";
 
-export interface LoginCredentialsDTO {
+export interface LoginCredentialsPayload {
   login: string;
   password: string;
 }
 
-export const login = (data: LoginCredentialsDTO): Promise<AuthUser> =>
-  axios.post("/auth/login", data);
+export const login = (payload: LoginCredentialsPayload): Promise<void> =>
+  axios.post<LoginCredentialsPayload, void>(
+    `${IDENTITY_API_URL}/api/user/auth/login`,
+    payload
+  );

@@ -11,7 +11,7 @@
 import { ETypography } from "@/shared/components/data-display";
 </script>
 
-<style>
+<style scoped>
 .badge {
   position: relative;
 }

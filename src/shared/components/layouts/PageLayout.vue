@@ -8,9 +8,9 @@
     </template>
   </PageHeader>
   <PageSidebar />
-  <PageContainer>
+  <PageMain>
     <slot></slot>
-  </PageContainer>
+  </PageMain>
   <PageFooter>
     <slot name="footer"></slot>
   </PageFooter>
@@ -21,6 +21,6 @@ import {
   PageHeader,
   PageFooter,
   PageSidebar,
-  PageContainer,
+  PageMain,
 } from "@/shared/components/layouts";
 </script>

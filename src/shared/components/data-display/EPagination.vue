@@ -1,77 +1,59 @@
 <template>
   <div class="pagination">
-    <button
+    <PaginationButton
+      :arrow="true"
       @click="emit('update:page', page - 1)"
       :disabled="isFirstPage"
-      class="pagination__arrow"
     >
       <ArrowIcon :size="24" direction="left" />
-    </button>
+    </PaginationButton>
+
     <div class="pagination-content">
-      <button
+      <PaginationButton v-if="!isFirstWindow" @click="emit('update:page', 1)">
+        1
+      </PaginationButton>
+      <PaginationButton
         v-if="!isFirstWindow"
-        class="pagination__button"
-        @click="emit('update:page', 1)"
-      >
-        <ETypography variant="body4" class="pagination__button_text">
-          1
-        </ETypography>
-      </button>
-      <button
-        v-if="!isFirstWindow"
-        class="pagination__button"
         @click="emit('update:page', (window - 1) * props.perPage + 1)"
       >
-        <ETypography variant="body4" class="pagination__button_text">
-          ...
-        </ETypography>
-      </button>
-      <button
+        ...
+      </PaginationButton>
+      <PaginationButton
         v-for="value in rangeWindow"
         :key="value"
-        class="pagination__button"
         :class="{ pagination__button_active: props.page === value }"
         @click="emit('update:page', value)"
       >
-        <ETypography variant="body4" class="pagination__button_text">
-          {{ value }}
-        </ETypography>
-      </button>
-      <button
+        {{ value }}
+      </PaginationButton>
+      <PaginationButton
         v-if="!isLastWindow"
-        class="pagination__button"
         @click="emit('update:page', (window + 1) * props.perPage + 1)"
       >
-        <ETypography variant="body4" class="pagination__button_text">
-          ...
-        </ETypography>
-      </button>
-      <button
+        ...
+      </PaginationButton>
+      <PaginationButton
         v-if="!isLastWindow"
-        class="pagination__button"
         @click="emit('update:page', props.total)"
       >
-        <ETypography variant="body4" class="pagination__button_text">
-          {{ props.total }}
-        </ETypography>
-      </button>
+        {{ props.total }}
+      </PaginationButton>
     </div>
-    <button
+    <PaginationButton
       :disabled="isLastPage"
-      class="pagination__arrow"
       @click="emit('update:page', page + 1)"
     >
       <ArrowIcon :size="24" direction="right" />
-    </button>
+    </PaginationButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ETypography } from "@/shared/components/data-display";
+import { computed } from "vue";
+
+import { PaginationButton } from "@/shared/components/data-display";
 import { range } from "@/shared/utils/range";
 import { ArrowIcon } from "@/shared/components/icons";
-
-import { computed } from "vue";
 
 export interface EPaginationProps {
   total: number;
@@ -104,7 +86,7 @@ const startPage = computed((): number => {
   switch (true) {
     case props.page > props.perPage:
       return props.perPage * window.value + 1;
-    case props.page === props.total:
+    case props.page === props.total && props.perPage < props.total:
       return props.total - props.perPage + 1;
     default:
       return 1;
@@ -132,33 +114,8 @@ const isLastWindow = computed(
   gap: 21px;
 }
 
-.pagination__arrow {
-  display: flex;
-  align-items: center;
-  color: var(--white-color);
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-}
-
 .pagination-content {
   display: flex;
-}
-
-.pagination__button_text {
-  font-weight: 500;
-}
-
-.pagination__button {
-  padding: 2px 7px;
-  border: 1px solid transparent;
-  background-color: transparent;
-  cursor: pointer;
-  color: var(--white-color);
-}
-
-.pagination__button_active {
-  background: var(--dark-blue-color);
-  border: 1px solid var(--white-color);
+  align-items: center;
 }
 </style>

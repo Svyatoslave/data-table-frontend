@@ -4,19 +4,18 @@
       <slot></slot>
     </ETypography>
   </RouterLink>
-  <EDivider v-if="hasDivider" />
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { EDivider, ETypography } from "@/shared/components/data-display";
+
+import { ETypography } from "@/shared/components/data-display";
 
 export interface PageSidebarLinkProps {
   to: string;
-  hasDivider?: boolean;
 }
 
-withDefaults(defineProps<PageSidebarLinkProps>(), { hasDivider: true });
+defineProps<PageSidebarLinkProps>();
 </script>
 
 <style scoped>

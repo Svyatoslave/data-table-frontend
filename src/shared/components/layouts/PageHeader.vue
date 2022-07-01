@@ -27,12 +27,13 @@
         </div>
       </div>
     </ContentContainer>
+    <EDivider v-if="hasSlotContent(slots.default)" />
     <slot></slot>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, useSlots, watch } from "vue";
 import { useElementSize, useCssVar } from "@vueuse/core";
 
 import { ContentContainer } from "@/shared/components/layouts";
@@ -42,10 +43,12 @@ import {
   ETypography,
 } from "@/shared/components/data-display";
 import { BellIcon, UserIcon } from "@/shared/components/icons";
-import type { Nullable } from "@/shared/types/utility";
 import { createMeasurableProp } from "@/shared/utils/styles";
+import { hasSlotContent } from "@/shared/utils/vue";
 
-const headerRef = ref<Nullable<HTMLHeadElement>>(null);
+const slots = useSlots();
+
+const headerRef = ref(null);
 const { height } = useElementSize(headerRef);
 const headerFullHeightVar = useCssVar("--header-full-height");
 

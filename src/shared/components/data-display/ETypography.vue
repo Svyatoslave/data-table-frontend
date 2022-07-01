@@ -14,6 +14,7 @@
 import { computed } from "vue";
 
 export type VariantKind =
+  | "title1"
   | "title2"
   | "title3"
   | "title4"
@@ -34,6 +35,7 @@ const props = withDefaults(defineProps<ETypographyProps>(), {
   variant: "body2",
   uppercase: false,
   variantMapping: () => ({
+    title1: "h1",
     title2: "h2",
     title3: "h3",
     title4: "h4",
@@ -51,6 +53,12 @@ const computedTag = computed(
 <style>
 .typography {
   margin: 0;
+}
+
+.typography--variant-title1 {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .typography--variant-title2 {

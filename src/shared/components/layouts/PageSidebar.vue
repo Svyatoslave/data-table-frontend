@@ -1,15 +1,16 @@
 <template>
   <nav class="sidebar">
-    <PageSidebarLink to="/">Заявки</PageSidebarLink>
+    <PageSidebarLink to="/application-forms">Заявки</PageSidebarLink>
+    <EDivider />
     <PageSidebarLink to="/agendas">Повестки</PageSidebarLink>
-    <PageSidebarLink to="/protocols" :has-divider="false">
-      Протоколы
-    </PageSidebarLink>
+    <EDivider />
+    <PageSidebarLink to="/protocols"> Протоколы </PageSidebarLink>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { PageSidebarLink } from ".";
+import { EDivider } from "@/shared/components/data-display";
+import { PageSidebarLink } from "@/shared/components/layouts";
 </script>
 
 <style scoped>
@@ -25,17 +26,5 @@ import { PageSidebarLink } from ".";
   box-shadow: var(--header-shadow);
   background-color: var(--white-color);
   z-index: 1;
-}
-
-.sidebar__link {
-  padding: 22px 30px;
-  color: var(--dark-blue-color);
-  text-decoration: none;
-  transition: all 0.075s;
-}
-
-.sidebar__link:hover,
-.sidebar__link--active {
-  background-color: var(--grayish-cyan-color);
 }
 </style>

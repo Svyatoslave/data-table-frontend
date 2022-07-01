@@ -1,22 +1,7 @@
-import Axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-
-import { storage } from "@/lib/storage";
-
-const authRequestInterceptor = (
-  config: AxiosRequestConfig
-): AxiosRequestConfig => {
-  const token = storage.getToken();
-  if (token === null) return config;
-
-  return {
-    ...config,
-    headers: { ...config.headers, Authorization: `Bearer ${token}` },
-  };
-};
+import Axios, { type AxiosResponse } from "axios";
 
 const extractionDataResponseInterceptor = (resp: AxiosResponse) => resp.data;
 
-export const axios = Axios.create();
+export const axios = Axios.create({ withCredentials: true });
 
-axios.interceptors.request.use(authRequestInterceptor);
 axios.interceptors.response.use(extractionDataResponseInterceptor);

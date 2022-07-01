@@ -3,4 +3,7 @@ export { default as ETPIcon } from "./ETPIcon.vue";
 export { default as BellIcon } from "./BellIcon.vue";
 export { default as UserIcon } from "./UserIcon.vue";
 export { default as MailIcon } from "./MailIcon.vue";
+export { default as LoadingIcon } from "./LoadingIcon.vue";
 export { default as ArrowIcon } from "./ArrowIcon.vue";
+export { default as CrossIcon } from "./CrossIcon.vue";
+export { default as DownloadIcon } from "./DownloadIcon.vue";

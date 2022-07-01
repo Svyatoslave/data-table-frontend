@@ -1,9 +1,15 @@
+export interface UserRole {
+  id: string;
+  name: string;
+}
+
 export interface User {
   login: string;
-  password: string;
-  fullName: string;
+  name: string;
+  surname: string;
+  patronymic: string;
   email: string;
-  role: string;
-  phone: string;
-  organization: string;
+  numberPhone: string;
+  organizationName: string;
+  role: UserRole;
 }

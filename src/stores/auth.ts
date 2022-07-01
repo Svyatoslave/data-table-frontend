@@ -1,14 +1,17 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 
-import { storage } from "@/lib/storage";
 import type { Nullable } from "@/shared/types/utility";
 import type { User } from "@/features/users";
 import {
   loadUser,
   login,
-  logout,
-  type LoginCredentialsDTO,
+  refresh,
+  isBeforeExpired,
+  type LoginCredentialsPayload,
+  parseExpired,
 } from "@/features/auth";
+import { storage } from "@/lib/storage";
+import { isNonNullable } from "@/shared/utils/equal";
 
 type AuthStatus = "initial" | "authorized" | "unauthorized";
 
@@ -32,39 +35,57 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     async loadUser() {
-      const token = storage.getToken();
-      if (token === null) {
+      const expired = storage.getExpired();
+      if (!isNonNullable(expired)) {
         this.status = "unauthorized";
+
         return;
       }
 
+      const parsedExpired = parseExpired(expired);
+
+      console.log(parsedExpired);
+
       try {
+        if (isBeforeExpired(parsedExpired)) {
+          await refresh();
+        }
+
         const user = await loadUser();
         this.$patch({
           user,
           status: "authorized",
         });
       } catch {
-        storage.clearToken();
         this.status = "unauthorized";
       }
-    },
-    async login(dto: LoginCredentialsDTO) {
-      const { user, token } = await login(dto);
 
-      storage.setToken(token);
+      // const getMe = async (): Promise<void> => {
+      //   const user = await loadUser();
+      //   this.$patch({
+      //     user,
+      //     status: "authorized",
+      //   });
+      // };
+
+      // try {
+      //   await getMe();
+      // } catch {
+      //   try {
+      //     await refresh();
+      //     await getMe();
+      //   } catch {
+      //     this.status = "unauthorized";
+      //   }
+      // }
+    },
+    async login(payload: LoginCredentialsPayload) {
+      await login(payload);
+      const user = await loadUser();
+
       this.$patch({
         user,
         status: "authorized",
-      });
-    },
-    async logout() {
-      await logout();
-
-      storage.clearToken();
-      this.$patch({
-        user: null,
-        status: "unauthorized",
       });
     },
   },
