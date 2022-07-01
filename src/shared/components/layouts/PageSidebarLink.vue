@@ -21,7 +21,7 @@ defineProps<PageSidebarLinkProps>();
 <style scoped>
 .sidebar-link {
   padding: 22px 30px;
-  color: var(--dark-blue-color);
+  color: var(--blue-color);
   text-decoration: none;
   transition: all 0.075s;
 }

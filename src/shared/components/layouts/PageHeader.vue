@@ -84,7 +84,7 @@ watch(height, (currentHeight) => {
 }
 
 .header__commission-exclusion {
-  color: var(--dark-blue-color);
+  color: var(--blue-color);
 }
 
 .header__info {

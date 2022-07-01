@@ -38,7 +38,7 @@ defineProps<TableHeadRowProps>();
 .table-cell {
   box-sizing: border-box;
   padding: 0 20px;
-  color: var(--dark-blue-color);
+  color: var(--blue-color);
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;

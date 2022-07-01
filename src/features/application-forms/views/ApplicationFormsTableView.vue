@@ -12,23 +12,20 @@
       </div>
     </template>
     <template #default>
+      <LoadingOverlay :visible="isFetching" class="aftv__loading-overlay" />
       <TableBody
-        :loading="isFetching"
         :rows="data?.items"
         :columns="columns"
         :get-row-key="getRowKey"
       >
-        <template #selection="row: ApplicationFormRow">
-          <div class="aftv__row-selection">
-            <span>{{ row.id }}</span>
-            <LinkIcon @click="handleClickLink(row)" class="aftv__link-icon" />
-          </div>
+        <template #selection="{ id }: ApplicationFormRow">
+          {{ id }}
         </template>
       </TableBody>
     </template>
     <template #footer>
-      <EButton size="l" color="success" variant="text"  >Сформировать проект протокола</EButton>
       <template v-if="isNonNullable(total)">
+        <EButton :disabled="true">Сформировать проект протокола</EButton>
         <EPagination
           :total="Math.ceil(total / offset)"
           :per-page="5"
@@ -43,9 +40,6 @@
       </template>
     </template>
   </PageLayout>
-  <EModal title="Подробная информация о заявке" v-model:visible="visibleModal">
-    <DetailApplicationFormModal :applicationForm="detailApplicationFormModal" />
-  </EModal>
 </template>
 
 <script setup lang="ts">
@@ -55,7 +49,6 @@ import { Head } from "@vueuse/head";
 
 import type { PaginatedDto } from "@/lib/api";
 import { createHeadTitle } from "@/shared/utils/meta";
-import { EButton } from "@/shared/components/inputs";
 import {
   TableBody,
   TableHead,
@@ -69,18 +62,14 @@ import {
   ContentContainer,
   SidebarFiller,
 } from "@/shared/components/layouts";
+import { EButton } from "@/shared/components/inputs";
+import { LoadingOverlay } from "@/shared/components/overlay";
 import type { Nullable } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
-import {
-  getApplicationForms,
-  DetailApplicationFormModal,
-} from "@/features/application-forms";
-import { LinkIcon } from "@/shared/components/icons";
-import { EModal } from "@/shared/components/overlay";
-import type { DetailApplicationForm } from "@/features/application-forms";
+import { getApplicationForms } from "@/features/application-forms";
 
 type ApplicationFormRow = {
-  id: number;
+  id: string;
   typeApplicationForm: string;
   complainant: string;
   createdAt: string;
@@ -92,14 +81,14 @@ const columns: TableColumns<ApplicationFormRow> = [
     type: "slot",
     headerName: "ID",
     slotName: "selection",
-    width: "100px",
+    width: "173px",
   },
   {
     key: "type",
     type: "standard",
     field: "typeApplicationForm",
     headerName: "Вид заявки",
-    width: "931px",
+    width: "858px",
   },
   {
     key: "applicant",
@@ -123,9 +112,6 @@ const total = ref<Nullable<number>>(null);
 const offset = 30;
 const page = ref<number>(1);
 
-const visibleModal = ref<boolean>(false);
-const detailApplicationFormModal = ref<Nullable<DetailApplicationForm>>(null);
-
 const { data, isFetching } = useQuery<PaginatedDto<ApplicationFormRow>>(
   ["application-forms", { page }],
   () => getApplicationForms({ page: page.value }),
@@ -136,14 +122,6 @@ const { data, isFetching } = useQuery<PaginatedDto<ApplicationFormRow>>(
     },
   }
 );
-
-const handleClickLink = (row: ApplicationFormRow) => {
-  visibleModal.value = true;
-  detailApplicationFormModal.value = {
-    id: row.id,
-    typeApplicationForm: row.typeApplicationForm,
-  };
-};
 </script>
 
 <style scoped>
@@ -151,18 +129,10 @@ const handleClickLink = (row: ApplicationFormRow) => {
   display: flex;
 }
 
-.aftv__row-selection {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.aftv__link-icon {
-  margin-left: 5px;
-  flex-grow: 1;
-}
-
-.aftv__link-icon:hover {
-  cursor: pointer;
+.aftv__loading-overlay {
+  position: fixed;
+  margin-top: var(--header-full-height);
+  margin-left: var(--sidebar-width);
+  margin-bottom: var(--footer-height);
 }
 </style>

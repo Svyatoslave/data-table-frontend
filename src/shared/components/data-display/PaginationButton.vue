@@ -23,7 +23,7 @@ import { ETypography } from "@/shared/components/data-display";
 }
 
 .pagination__button_active {
-  background: var(--dark-blue-color);
+  background: var(--blue-color);
   border: 1px solid var(--white-color);
 }
 .pagination__button_text {

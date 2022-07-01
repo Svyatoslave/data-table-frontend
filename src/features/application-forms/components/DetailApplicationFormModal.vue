@@ -90,6 +90,6 @@ defineProps<DetailApplicationFormModalProps>();
   margin-top: 20px;
 }
 .dafm__text {
-  color: var(--dark-blue-color);
+  color: var(--blue-color);
 }
 </style>

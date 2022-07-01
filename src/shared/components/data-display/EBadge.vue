@@ -30,7 +30,7 @@ import { ETypography } from "@/shared/components/data-display";
   text-align: center;
   border-radius: 10px;
   background-color: var(--yellow-color);
-  color: var(--dark-blue-color);
+  color: var(--blue-color);
   transform: scale(1) translate(50%, -50%);
   transform-origin: 100% 0%;
   z-index: 1;

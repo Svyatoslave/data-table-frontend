@@ -68,7 +68,7 @@ defineProps<TableBodyRowProps>();
 .table-cell {
   box-sizing: border-box;
   padding: 0 20px;
-  color: var(--dark-blue-color);
+  color: var(--blue-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
