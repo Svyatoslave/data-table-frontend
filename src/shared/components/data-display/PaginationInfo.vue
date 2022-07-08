@@ -16,15 +16,22 @@ import { ETypography } from "@/shared/components/data-display";
 
 export interface PaginationInfoProps {
   text: string;
-  offset: number;
-  window: number;
+  page: number;
+  pageSize: number;
   total: number;
 }
 
 const props = defineProps<PaginationInfoProps>();
 
-const firstPage = computed((): number => (props.window - 1) * props.offset + 1);
-const lastPage = computed((): number => props.window * props.offset);
+// 2 30 69
+
+const start = computed((): number => (props.page - 1) * props.pageSize);
+const end = computed((): number => props.page * props.pageSize);
+
+const firstPage = computed((): number => start.value + 1);
+const lastPage = computed((): number =>
+  props.total > end.value ? props.page * props.pageSize : props.total
+);
 </script>
 
 <style scoped>

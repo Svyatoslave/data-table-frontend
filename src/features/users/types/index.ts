@@ -1,6 +1,8 @@
+export type UserRoleName = "Admin" | "MemberCommission" | "SecretaryCommission";
+
 export interface UserRole {
   id: string;
-  name: string;
+  name: UserRoleName;
 }
 
 export interface User {

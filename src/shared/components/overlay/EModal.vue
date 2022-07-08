@@ -1,41 +1,42 @@
 <template>
-  <Teleport to="body">
-    <Transition>
-      <div v-show="visible" class="modal">
-        <div ref="containerRef" class="modal__container">
-          <div class="modal__header">
-            <ETypography variant="title1" class="modal__title">
-              {{ title }}
-            </ETypography>
-            <CrossIcon
-              class="modal__button"
-              @click="emit('update:visible', false)"
-            />
-          </div>
-          <div class="modal__body">
-            <slot></slot>
-          </div>
-        </div>
+  <div v-if="visible" ref="containerRef" class="modal__container">
+    <div class="modal__head">
+      <div class="modal__head-info">
+        <ETypography variant="title1" class="modal__title">
+          {{ title }}
+        </ETypography>
+        <CrossIcon
+          class="modal__button"
+          @click="emit('update:visible', false)"
+        />
       </div>
-    </Transition>
-  </Teleport>
+
+      <ETypography variant="body2" class="modal__subtitle">
+        {{ subtitle }}
+      </ETypography>
+    </div>
+    <div class="modal__body">
+      <slot></slot>
+    </div>
+
+    <div class="modal__footer">
+      <slot name="actions"></slot>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { onClickOutside, useEventListener } from "@vueuse/core";
 
 import { ETypography } from "@/shared/components/data-display";
 
 import { CrossIcon } from "@/shared/components/icons";
-import {
-  documentDisabledScroll,
-  documentEnabledScroll,
-} from "@/shared/utils/document";
 
 export interface ModalProps {
   visible: boolean;
   title: string;
+  subtitle?: string;
 }
 
 interface ModalEmits {
@@ -44,7 +45,7 @@ interface ModalEmits {
 
 const emit = defineEmits<ModalEmits>();
 
-const props = defineProps<ModalProps>();
+defineProps<ModalProps>();
 
 const containerRef = ref(null);
 
@@ -53,60 +54,66 @@ onClickOutside(containerRef, () => emit("update:visible", false));
 useEventListener(document, "keydown", (event) => {
   if (event.key === "Escape") emit("update:visible", false);
 });
-
-watch(
-  () => props.visible,
-  (current) => {
-    if (current) {
-      documentDisabledScroll();
-    } else {
-      setTimeout(() => {
-        documentEnabledScroll();
-      }, 250);
-    }
-  }
-);
 </script>
 
 <style scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.7s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  transition: opacity 0.3s ease;
-  z-index: 10000;
-}
-
 .modal__container {
   width: 840px;
   margin: 0px auto;
-  padding: 20px 30px 40px 30px;
-  background: var(--white-color);
+  background-color: var(--white-color);
   border-radius: 4px;
   transition: all 0.3s ease;
 }
-.modal__header {
+.modal__head {
+  background-color: var(--white-color);
+  top: 0;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal__head-info {
   display: flex;
   justify-content: space-between;
 }
 .modal__title {
   color: var(--black-color);
 }
-.modal__body {
-  margin-top: 40px;
+
+.modal__subtitle {
+  color: var(--black-color);
 }
+.modal__body {
+  max-height: 640px;
+  overflow-y: auto;
+  margin: 20px 4px;
+  margin-bottom: 0;
+  padding: 0 26px;
+}
+
+.modal__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal__body::-webkit-scrollbar-track {
+  height: 640px;
+  border-radius: 4px;
+}
+
+.modal__body::-webkit-scrollbar-thumb {
+  background: #c9c9d6;
+  border-radius: 4px;
+}
+
+.modal__footer {
+  background-color: var(--white-color);
+  bottom: 0;
+  padding: 20px 30px;
+  display: flex;
+  gap: 10px;
+}
+
 .modal__button {
   cursor: pointer;
 }

@@ -17,73 +17,108 @@
         :rows="data?.items"
         :columns="columns"
         :get-row-key="getRowKey"
+        :is-disabled-row="isNonSelectedType"
       >
-        <template #selection="row: ApplicationFormRow">
+        <template #selection="{ disabled, row }: TableRowCtx<ApplicationForm>">
           <div class="aftv__row-selection">
+            <ECheckbox
+              :disabled="disabled"
+              :checked="isSelected(row)"
+              class="aftv__checkbox"
+              @update:checked="changeSelectable(row)"
+            />
             <span>{{ row.id }}</span>
-            <LinkIcon @click="handleClickLink(row)" class="aftv__link-icon" />
+            <LinkIcon
+              :disabled="disabled"
+              class="aftv__link-icon"
+              @click="selectDetailId(row)"
+            />
           </div>
         </template>
       </TableBody>
     </template>
     <template #footer>
-      <EButton size="l" color="success" variant="text"  >Сформировать проект протокола</EButton>
+      <EButton
+        :disabled="nonSelected"
+        variant="contained"
+        color="secondary"
+        @click="changeVisibleModal(true)"
+      >
+        Сформировать проект протокола
+      </EButton>
       <template v-if="isNonNullable(total)">
         <EPagination
-          :total="Math.ceil(total / offset)"
-          :per-page="5"
           v-model:page="page"
+          :total="total"
+          :page-size="pageSize"
+          :per-page="5"
         />
         <PaginationInfo
           text="Показаны заявки"
-          :offset="offset"
-          :window="page"
+          :page="page"
+          :page-size="pageSize"
           :total="total"
         />
       </template>
     </template>
   </PageLayout>
-  <EModal title="Подробная информация о заявке" v-model:visible="visibleModal">
-    <DetailApplicationFormModal :applicationForm="detailApplicationFormModal" />
-  </EModal>
+  <DetailApplicationFormModal
+    :queryKey="queryKey"
+    :detail-id="detailId"
+    @clear-detail-id="clearDetailId"
+  />
+  <FormingSummonModal
+    v-model:visible="visibleModal"
+    :selected="selectable.selected"
+    @success="handleSuccess"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useQuery } from "vue-query";
 import { Head } from "@vueuse/head";
 
-import type { PaginatedDto } from "@/lib/api";
 import { createHeadTitle } from "@/shared/utils/meta";
-import { EButton } from "@/shared/components/inputs";
+import { EButton, ECheckbox } from "@/shared/components/inputs";
 import {
   TableBody,
   TableHead,
   EPagination,
   PaginationInfo,
+  useSortable,
+  useProvideSortable,
+  useFilterable,
+  useProvideFilterable,
   type GetRowKeyFn,
   type TableColumns,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type TableRowCtx,
 } from "@/shared/components/data-display";
 import {
   PageLayout,
   ContentContainer,
   SidebarFiller,
 } from "@/shared/components/layouts";
-import type { Nullable } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
 import {
   getApplicationForms,
   DetailApplicationFormModal,
+  FormingSummonModal,
+  useApplicationFormDetail,
 } from "@/features/application-forms";
 import { LinkIcon } from "@/shared/components/icons";
-import { EModal } from "@/shared/components/overlay";
-import type { DetailApplicationForm } from "@/features/application-forms";
+import {
+  getApplicationFormTypes,
+  useApplicationFormSelectable,
+  type ApplicationForm,
+} from "@/features/application-forms";
+import { usePagination } from "@/shared/composables";
 
-type ApplicationFormRow = {
+export type ApplicationFormRow = {
   id: number;
-  typeApplicationForm: string;
+  typeApplicationFormText: string;
   complainant: string;
-  createdAt: string;
+  createdAt: Date;
 };
 
 const columns: TableColumns<ApplicationFormRow> = [
@@ -92,21 +127,52 @@ const columns: TableColumns<ApplicationFormRow> = [
     type: "slot",
     headerName: "ID",
     slotName: "selection",
-    width: "100px",
+    width: "174px",
+    sortOptions: {
+      sortable: true,
+      sortField: "1",
+    },
+    filterOptions: {
+      filterable: true,
+      filterField: "searchId",
+      filterType: "primitive",
+    },
   },
   {
     key: "type",
     type: "standard",
-    field: "typeApplicationForm",
+    field: "typeApplicationFormText",
     headerName: "Вид заявки",
-    width: "931px",
+    width: "858px",
+    sortOptions: {
+      sortable: true,
+      sortField: "2",
+    },
+    filterOptions: {
+      filterable: true,
+      filterField: "typeApplicationForm",
+      filterType: "multi-select",
+      getOptions: () =>
+        getApplicationFormTypes().then((data) =>
+          data.items.map(({ id, name }) => ({ value: id, label: name }))
+        ),
+    },
   },
   {
-    key: "applicant",
+    key: "complainant",
     type: "standard",
     field: "complainant",
     headerName: "Заявитель",
     width: "393px",
+    sortOptions: {
+      sortable: true,
+      sortField: "3",
+    },
+    filterOptions: {
+      filterable: true,
+      filterField: "searchComplainant",
+      filterType: "common",
+    },
   },
   {
     key: "date",
@@ -114,21 +180,52 @@ const columns: TableColumns<ApplicationFormRow> = [
     field: "createdAt",
     headerName: "Дата и время",
     width: "151px",
+    sortOptions: {
+      sortable: true,
+      sortField: "4",
+    },
+    filterOptions: {
+      filterable: false,
+    },
   },
 ];
 
-const getRowKey: GetRowKeyFn<ApplicationFormRow> = (row) => row.id;
+const getRowKey: GetRowKeyFn<ApplicationForm> = (row) => row.id;
 
-const total = ref<Nullable<number>>(null);
-const offset = 30;
-const page = ref<number>(1);
+const { total, page, pageSize } = usePagination();
 
-const visibleModal = ref<boolean>(false);
-const detailApplicationFormModal = ref<Nullable<DetailApplicationForm>>(null);
+const {
+  selectable,
+  nonSelected,
+  visibleModal,
+  isSelected,
+  isNonSelectedType,
+  changeVisibleModal,
+  changeSelectable,
+  clearSelected,
+} = useApplicationFormSelectable();
 
-const { data, isFetching } = useQuery<PaginatedDto<ApplicationFormRow>>(
-  ["application-forms", { page }],
-  () => getApplicationForms({ page: page.value }),
+const { detailId, selectDetailId, clearDetailId } = useApplicationFormDetail();
+
+const filterable = useFilterable();
+useProvideFilterable(filterable);
+
+const sortable = useSortable();
+useProvideSortable(sortable);
+
+const queryKey = [
+  "application-forms",
+  { page, sort: sortable.sort, filters: filterable.filters },
+];
+
+const { data, isFetching, refetch } = useQuery(
+  queryKey,
+  () =>
+    getApplicationForms({
+      pagination: { page: page.value },
+      sort: sortable.sort,
+      filters: filterable.filters.value,
+    }),
   {
     keepPreviousData: true,
     onSuccess: (data) => {
@@ -137,12 +234,9 @@ const { data, isFetching } = useQuery<PaginatedDto<ApplicationFormRow>>(
   }
 );
 
-const handleClickLink = (row: ApplicationFormRow) => {
-  visibleModal.value = true;
-  detailApplicationFormModal.value = {
-    id: row.id,
-    typeApplicationForm: row.typeApplicationForm,
-  };
+const handleSuccess = () => {
+  clearSelected();
+  refetch.value();
 };
 </script>
 
@@ -155,14 +249,5 @@ const handleClickLink = (row: ApplicationFormRow) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.aftv__link-icon {
-  margin-left: 5px;
-  flex-grow: 1;
-}
-
-.aftv__link-icon:hover {
-  cursor: pointer;
 }
 </style>

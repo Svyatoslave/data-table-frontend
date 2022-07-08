@@ -1,7 +1,11 @@
 <template>
-  <tr class="table-row">
+  <tr class="table-row" :class="{ [`table-row--disabled`]: disabled }">
     <template v-for="(column, idx) in columns" :key="column.key">
-      <td class="table-cell" :style="{ width: column.width }">
+      <td
+        class="table-cell"
+        :class="{ [`table-cell--disabled`]: disabled }"
+        :style="{ width: column.width }"
+      >
         <ETypography variant="body2">
           <template v-if="column.type === 'standard'">
             {{ row[column.field] }}
@@ -17,7 +21,10 @@
             }}
           </template>
           <template v-if="column.type === 'slot'">
-            <slot :name="column.slotName" v-bind="row" />
+            <slot
+              :name="column.slotName"
+              v-bind="{ disabled, row, idx } as TableRowCtx<any>"
+            />
           </template>
         </ETypography>
       </td>
@@ -37,9 +44,11 @@ import {
   ETypography,
   type RowData,
   type TableColumns,
+  type TableRowCtx,
 } from "@/shared/components/data-display";
 
 export interface TableBodyRowProps<T extends RowData = RowData> {
+  disabled: boolean;
   row: T;
   idx: number;
   columns: TableColumns<T>;
@@ -65,6 +74,14 @@ defineProps<TableBodyRowProps>();
   border: 1px solid #5a79a6;
 }
 
+.table-row--disabled {
+  cursor: not-allowed;
+}
+
+.table-row--disabled:hover {
+  border: 1px solid transparent;
+}
+
 .table-cell {
   box-sizing: border-box;
   padding: 0 20px;
@@ -73,5 +90,9 @@ defineProps<TableBodyRowProps>();
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1;
+}
+
+.table-cell--disabled {
+  color: var(--disabled-color);
 }
 </style>

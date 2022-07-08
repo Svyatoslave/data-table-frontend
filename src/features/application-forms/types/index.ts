@@ -1,9 +1,14 @@
 import type { Nullable } from "@/shared/types/utility";
 
-export interface ApplicationForm {
+export type ApplicationForm = {
   id: number;
-  typeApplicationForm: string;
+  typeApplicationFormText: string;
   complainant: string;
-  createdAt: string;
+  createdAt: Date;
   summaryInfo: Nullable<string>;
+};
+
+export interface ApplicationFormType {
+  id: number;
+  name: string;
 }

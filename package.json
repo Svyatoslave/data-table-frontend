@@ -8,14 +8,13 @@
     "preview": "vite preview --port 2000",
     "test:unit": "vitest --environment jsdom",
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --fix --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
-    "docker:build": "docker build -t etp-commission-frontend:0.0.0 .",
-    "docker:run": "docker run -d -p 80:80 etp-commission-frontend:0.0.0"
+    "lint": "eslint . --fix --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts"
   },
   "dependencies": {
-    "@vueuse/core": "^8.2.6",
+    "@vueuse/core": "^8.9.1",
     "@vueuse/head": "^0.7.6",
     "axios": "^0.26.1",
+    "change-case": "^4.1.2",
     "dayjs": "^1.11.3",
     "js-cookie": "^3.0.1",
     "normalize.css": "^8.0.1",

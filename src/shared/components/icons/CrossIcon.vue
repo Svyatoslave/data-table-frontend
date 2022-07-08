@@ -1,5 +1,5 @@
 <template>
-  <BaseIcon :width="size" :height="size">
+  <BaseIcon :width="size" :height="size" class="cross-icon">
     <path
       d="M15.5643 1.84997C15.9548 1.45944 15.9548 0.826278 15.5643 0.435754C15.1738 0.0452293 14.5406 0.0452293 14.1501 0.435754L15.5643 1.84997ZM0.435785 14.15C0.0452608 14.5406 0.0452608 15.1737 0.435785 15.5643C0.82631 15.9548 1.45947 15.9548 1.85 15.5643L0.435785 14.15ZM14.1501 0.435754L0.435785 14.15L1.85 15.5643L15.5643 1.84997L14.1501 0.435754Z"
       fill="#002855"
@@ -23,4 +23,11 @@ withDefaults(defineProps<CrossIconProps>(), {
 });
 </script>
 
-<style></style>
+<style scoped>
+.link-icon path {
+  fill: all 0.125s;
+}
+.cross-icon:hover path {
+  fill: var(--green-color);
+}
+</style>

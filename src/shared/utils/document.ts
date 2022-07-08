@@ -11,7 +11,7 @@ export const documentDisabledScroll = () => {
 export const documentEnabledScroll = () => {
   const htmlElem = document.querySelector("html");
   if (htmlElem !== null) {
-    htmlElem.style.overflowY = "visible";
+    htmlElem.style.overflowY = "scroll";
     htmlElem.style.marginRight = "0";
   }
 };

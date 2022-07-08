@@ -1,21 +1,36 @@
 <template>
   <button
+    ref="buttonRef"
     type="button"
     :class="[
       `button`,
       `button--size-${size}`,
       `button--color-${color}`,
-      `button--variant-${color}-${variant}`,
+      `button--variant-${variant}`,
+      { [`button--loading`]: loading },
     ]"
   >
     <slot name="start-icon"></slot>
-    <ETypography variant="body2"><slot></slot></ETypography>
+    <ETypography v-if="!loading" variant="body2"><slot></slot></ETypography>
+    <div
+      v-else
+      class="button__loading-overlay"
+      :style="{ width: prevSize.width, height: prevSize.height }"
+    >
+      <LoadingIcon :color="loadingColor" />
+    </div>
     <slot name="end-icon"></slot>
   </button>
 </template>
 
 <script setup lang="ts">
+import { computed, reactive, ref, watch } from "vue";
+import { useElementSize } from "@vueuse/core";
+
 import { ETypography } from "@/shared/components/data-display";
+import { LoadingIcon } from "@/shared/components/icons";
+import type { Nullable, Optional } from "@/shared/types/utility";
+import { createMeasurableProp } from "@/shared/utils/styles";
 
 export type SizeKind = "s" | "m" | "l";
 
@@ -26,28 +41,137 @@ export type ColorKind =
   | "error"
   | "success";
 
-export type VariantKind = "contained" | "outlined"| "text";
+export type VariantKind = "text" | "outlined" | "contained";
 
 export interface ButtonProps {
-  size: SizeKind;
-  color: ColorKind;
-  variant: VariantKind;
+  loading?: boolean;
+  size?: SizeKind;
+  color?: ColorKind;
+  variant?: VariantKind;
 }
-defineProps<ButtonProps>();
+
+interface PrevSize {
+  width: Optional<string>;
+  height: Optional<string>;
+}
+
+type loadingColorKind = "blue" | "white";
+
+const props = withDefaults(defineProps<ButtonProps>(), {
+  loading: false,
+  size: "l",
+  color: "primary",
+  variant: "contained",
+});
+
+const buttonRef = ref<Nullable<HTMLElement>>(null);
+const { width, height } = useElementSize(buttonRef);
+
+const prevSize = reactive<PrevSize>({
+  width: undefined,
+  height: undefined,
+});
+
+watch([width, height, () => props.loading], ([width, height]) => {
+  if (!props.loading) {
+    prevSize.width = createMeasurableProp(width);
+    prevSize.height = createMeasurableProp(height);
+  }
+});
+
+const loadingColor = computed((): loadingColorKind => {
+  switch (true) {
+    case props.color === "primary" && props.variant === "contained":
+    case props.color === "secondary" && props.variant === "contained":
+    case props.color === "error" && props.variant === "contained":
+    case props.color === "success" && props.variant === "contained":
+      return "white";
+
+    case props.color === "default":
+    case props.color === "primary" && props.variant !== "contained":
+    case props.color === "secondary" && props.variant !== "contained":
+    case props.color === "error" && props.variant !== "contained":
+    case props.color === "success" && props.variant !== "contained":
+      return "blue";
+  }
+  return "white";
+});
 </script>
 
 <style scoped>
-.button {
-  display: flex;
-  align-items: center;
-  padding: 9px 20px;
-  background: var(--blue-color);
-  color: var(--white-color);
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
+.button--color-primary {
+  --background-color: var(--blue-color);
+  --hover-color: var(--dark-blue-color);
+  --disabled-color: var(--light-blue-color);
+  --text-color: var(--white-color);
+  --variant-text-font-color: var(--blue-color);
+  --variant-outlined-color: var(--dark-blue-color);
+  --variant-outlined-font-color: var(--dark-blue-color);
+}
+.button--color-secondary {
+  --background-color: var(--sea-color);
+  --hover-color: var(--dark-sea-color);
+  --disabled-color: var(--light-sea-color);
+  --text-color: var(--white-color);
+  --variant-text-font-color: var(--sea-color);
+  --variant-outlined-color: var(--dark-sea-color);
+  --variant-outlined-font-color: var(--dark-sea-color);
 }
 
+.button--color-default {
+  --background-color: var(--white-color);
+  --hover-color: var(--light-white-color);
+  --disabled-color: var(--dark-white-color);
+  --text-color: var(--black-color);
+  --variant-text-font-color: var(--black-color);
+  --variant-outlined-color: var(--black-color);
+  --variant-outlined-font-color: var(--black-color);
+}
+
+.button--color-error {
+  --background-color: var(--red-color);
+  --hover-color: var(--dark-red-color);
+  --disabled-color: var(--light-red-color);
+  --text-color: var(--white-color);
+  --variant-text-font-color: var(--red-color);
+  --variant-outlined-color: var(--dark-red-color);
+  --variant-outlined-font-color: var(--dark-red-color);
+}
+
+.button--color-success {
+  --background-color: var(--green-color);
+  --hover-color: var(--dark-green-color);
+  --disabled-color: var(--light-green-color);
+  --text-color: var(--white-color);
+  --variant-text-font-color: var(--green-color);
+  --variant-outlined-color: var(--dark-green-color);
+  --variant-outlined-font-color: var(--dark-green-color);
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 9px 20px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--background-color);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.button:hover {
+  background-color: var(--hover-color);
+  border: 1px solid var(--hover-color);
+}
+.button:disabled {
+  background-color: var(--disabled-color);
+  border: 1px solid var(--disabled-color);
+  cursor: not-allowed;
+}
+.button--loading {
+  pointer-events: none;
+}
 .button--size-s {
   padding: 4px 12px;
 }
@@ -59,109 +183,39 @@ defineProps<ButtonProps>();
   padding: 9px 20px;
 }
 
-.button--color-primary{
-  background: var(--blue-color)
+.button--variant-text {
+  background-color: var(--white-color);
+  border: 1px solid var(--grayish-blue-color);
+  color: var(--variant-text-font-color);
+}
+.button--variant-text:hover {
+  background-color: var(--grayish-blue-color);
+  border: 1px solid var(--grayish-blue-color);
 }
 
-.button--color-primary:hover{
-  background: var(--dark-blue-color) ;
-}
-.button--color-primary[disabled]{
-  background: var(--light-blue-color);
-    pointer-events: none;
+.button--variant-text:disabled {
+  border: 1px solid var(--grayish-blue-color);
+  color: var(--text-color);
 }
 
-.button--color-primary-outlined {
-  border: 1px solid var(--dark-blue-color) 
-}
-.button--color-primary-contained {
-border: 1px solid var(--blue-color);
-}
-
-.button--color-secondary{
-  background: var( --sea-color);
+.button--variant-outlined {
+  background-color: var(--white-color);
+  border: 1px solid var(--variant-outlined-color);
+  color: var(--variant-outlined-font-color);
 }
 
-.button--color-secondary:hover{
- background: var(--dark-sea-color);
+.button--variant-outlined:hover {
+  border: 1px solid var(--variant-outlined-color);
+  color: var(--text-color);
+}
+.button--variant-outlined:disabled {
+  border: none;
+  color: var(--text-color);
 }
 
-.button--color-secondary[disabled]{
-  background: var(--light-sea-color);
-    pointer-events: none;
-}
-
-.button--color-secondary-outlined {
-  border: 1px solid var(--dark-sea-color);
-}
-.button--color-secondary-contained {
-border: 1px solid var( --sea-color);
-}
-
-.button--color-default{
-  background: var(--white-color);
-  color: #001329;
-}
-
-.button--color-default:hover{
-background: var(--light-white-color);
-}
-
-.button--color-default[disabled]{
-  background: var(--dark-white-color);
-  color: var(--light-blue-color);
-    pointer-events: none;
-}
-
-.button--color-default-outlined {
-  border: 1px solid var(--blue-color);
-}
-.button--color-default-contained {
-border: 1px solid var(--dark-white-color);
-}
-
-.button--color-error{
-  background: var( --red-color);
-}
-
-.button--color-error:hover{
-  background: var( --dark-red-color);
-}
-
-.button--color-error[disabled]{
-background: var(--light-red-color);
-  pointer-events: none;
-}
-
-.button--color-error-outlined {
-  border: 1px solid var( --dark-red-color);
-}
-.button--color-error-contained {
-border: 1px solid var( --red-color);
-}
-
-.button--color-success{
-  background: var(--green-color);
-}
-
-.button--color-success:hover{
-background: var(--dark-green-color);
-}
-
-.button--color-success[disabled]{
-background: var(--light-green-color);
-  pointer-events: none;
-}
-
-.button--color-success-outlined {
-  border: 1px solid var(--dark-green-color);
-}
-.button--color-success-contained {
-border: 1px solid var(--green-color);
-}
-
-.button-[disabled] {
-  background: var(--light-sea-color);
-  cursor: default;
+.button__loading-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -5,6 +5,7 @@
       <TableBodyRow
         v-for="(row, idx) in rows"
         :key="getRowKey(row, idx)"
+        :disabled="isDisabledRow(row, idx)"
         :idx="idx"
         :row="row"
         :columns="columns"
@@ -30,6 +31,7 @@ import {
   type RowData,
   type GetRowKeyFn,
   type TableSlotColumn,
+  type IsDisabledRowFn,
 } from "@/shared/components/data-display";
 import { LoadingOverlay } from "@/shared/components/overlay";
 import { createMeasurableProp } from "@/shared/utils/styles";
@@ -49,9 +51,12 @@ export interface TableBody<T extends RowData = RowData> {
   loading: boolean;
   columns: TableColumns<DefaultRowData>;
   getRowKey: GetRowKeyFn<DefaultRowData>;
+  isDisabledRow?: IsDisabledRowFn<DefaultRowData>;
 }
 
-const props = defineProps<TableBody>();
+const props = withDefaults(defineProps<TableBody>(), {
+  isDisabledRow: () => false,
+});
 
 const customColumns = computed(
   () => props.columns.filter(({ type }) => type === "slot") as TableSlotColumn[]

@@ -58,6 +58,7 @@ import { ArrowIcon } from "@/shared/components/icons";
 export interface EPaginationProps {
   total: number;
   page: number;
+  pageSize: number;
   perPage?: number;
 }
 
@@ -71,35 +72,37 @@ const props = withDefaults(defineProps<EPaginationProps>(), {
   perPage: 5,
 });
 
+const length = computed((): number => Math.ceil(props.total / props.pageSize));
+
 const window = computed((): number =>
   props.page % props.perPage === 0
     ? Math.floor(props.page / props.perPage) - 1
     : Math.floor(props.page / props.perPage)
 );
 const lengthWindow = computed((): number =>
-  props.total % props.perPage === 0
-    ? Math.floor(props.total / props.perPage) - 1
-    : Math.floor(props.total / props.perPage)
+  length.value % props.perPage === 0
+    ? Math.floor(length.value / props.perPage) - 1
+    : Math.floor(length.value / props.perPage)
 );
 
 const startPage = computed((): number => {
   switch (true) {
     case props.page > props.perPage:
       return props.perPage * window.value + 1;
-    case props.page === props.total && props.perPage < props.total:
-      return props.total - props.perPage + 1;
+    case props.page === length.value && props.perPage < length.value:
+      return length.value - props.perPage + 1;
     default:
       return 1;
   }
 });
 const endPage = computed(() =>
-  Math.min(startPage.value + props.perPage - 1, props.total)
+  Math.min(startPage.value + props.perPage - 1, length.value)
 );
 
 const rangeWindow = computed(() => range(startPage.value, endPage.value));
 
 const isFirstPage = computed((): boolean => props.page === 1);
-const isLastPage = computed((): boolean => props.page === props.total);
+const isLastPage = computed((): boolean => props.page === length.value);
 
 const isFirstWindow = computed((): boolean => window.value === 0);
 const isLastWindow = computed(

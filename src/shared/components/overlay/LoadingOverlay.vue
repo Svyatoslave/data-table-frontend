@@ -1,7 +1,10 @@
 <template>
   <Transition>
     <div v-show="visible" class="loading-overlay">
-      <LoadingIcon :size="50" class="loading-overlay__icon" />
+      <LoadingIcon :size="40" class="loading-overlay__icon" />
+      <ETypography variant="body9" class="loading-overlay__text"
+        >Загрузка</ETypography
+      >
       <div class="loading-overlay__some"></div>
     </div>
   </Transition>
@@ -9,6 +12,7 @@
 
 <script setup lang="ts">
 import { LoadingIcon } from "@/shared/components/icons";
+import { ETypography } from "@/shared/components/data-display";
 
 export interface LoadingOverlayProps {
   visible: boolean;
@@ -34,8 +38,10 @@ defineProps<LoadingOverlayProps>();
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 10px;
   z-index: 2000;
 }
 
@@ -48,6 +54,10 @@ defineProps<LoadingOverlayProps>();
 }
 
 .loading-overlay__icon {
+  z-index: 1001;
+}
+.loading-overlay__text {
+  color: var(--blue-color);
   z-index: 1001;
 }
 </style>

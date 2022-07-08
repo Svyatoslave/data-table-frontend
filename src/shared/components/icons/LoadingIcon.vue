@@ -1,40 +1,58 @@
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
+  <BaseIcon
     :width="size"
     :height="size"
-    viewBox="0 0 100 100"
-    preserveAspectRatio="xMidYMid"
+    class="loading-icon"
+    :class="[`loading-icon--color-${color}`]"
   >
-    <circle
-      cx="50"
-      cy="50"
-      r="32"
-      stroke-width="10"
+    <path
+      opacity="0.2"
+      d="M10 3.00007C6.13406 3.00007 3.00007 6.13406 3.00007 10C3.00007 13.866 6.13406 17 10 17C13.866 17 17 13.866 17 10C17 6.13406 13.866 3.00007 10 3.00007Z"
       stroke="#002855"
-      stroke-dasharray="50.26548245743669 50.26548245743669"
-      fill="none"
+      stroke-width="2"
+      stroke-miterlimit="10"
       stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M10 3.00004C13.866 3.00004 17 6.13403 17 10"
+      stroke="#002855"
+      stroke-width="2"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     >
       <animateTransform
+        attributeType="xml"
         attributeName="transform"
         type="rotate"
+        from="0 10 10"
+        to="360 10 10"
+        dur="0.75s"
         repeatCount="indefinite"
-        dur="1s"
-        keyTimes="0;1"
-        values="0 50 50;360 50 50"
-      ></animateTransform>
-    </circle>
-  </svg>
+      />
+    </path>
+  </BaseIcon>
 </template>
 
 <script setup lang="ts">
+import { BaseIcon } from "@/shared/components/icons";
+
+export type ColorKind = "blue" | "white";
+
 export interface LoadingIconProps {
   size?: number;
+  color?: ColorKind;
 }
 
 withDefaults(defineProps<LoadingIconProps>(), {
   size: 20,
+  color: "blue",
 });
 </script>
+
+<style scoped>
+.loading-icon--color-white path {
+  stroke: var(--white-color);
+}
+</style>

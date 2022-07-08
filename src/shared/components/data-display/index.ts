@@ -6,7 +6,14 @@ export { default as PaginationInfo } from "./PaginationInfo.vue";
 export { default as PaginationButton } from "./PaginationButton.vue";
 
 export * from "./table/types";
+export * from "./table/useSortable";
+export * from "./table/useFilterable";
+export * from "./table/utils";
 export { default as TableBodyRow } from "./table/TableBodyRow.vue";
 export { default as TableBody } from "./table/TableBody.vue";
+export { default as TableFilter } from "./table/TableFilter.vue";
+export { default as TablePrimitiveFilter } from "./table/TablePrimitiveFilter.vue";
+export { default as TableCommonFilter } from "./table/TableCommonFilter.vue";
+export { default as TableMultiSelectFilter } from "./table/TableMultiSelectFilter.vue";
 export { default as TableHeadRow } from "./table/TableHeadRow.vue";
 export { default as TableHead } from "./table/TableHead.vue";

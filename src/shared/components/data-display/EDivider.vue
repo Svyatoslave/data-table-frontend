@@ -28,7 +28,7 @@ withDefaults(defineProps<EDividerProps>(), {
   margin: 0;
   border-width: 0;
   border-style: solid;
-  border-color: #ececf5;
+  border-color: var(--grayish-blue-color);
 }
 
 .divider--orientation-horizontal {

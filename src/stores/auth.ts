@@ -1,6 +1,10 @@
+import type { RouteMeta } from "vue-router";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
+import { storage } from "@/lib/storage";
 import type { Nullable } from "@/shared/types/utility";
+import { isNonNullable } from "@/shared/utils/equal";
+import { isDev } from "@/shared/config";
 import type { User } from "@/features/users";
 import {
   loadUser,
@@ -10,74 +14,77 @@ import {
   type LoginCredentialsPayload,
   parseExpired,
 } from "@/features/auth";
-import { storage } from "@/lib/storage";
-import { isNonNullable } from "@/shared/utils/equal";
 
-type AuthStatus = "initial" | "authorized" | "unauthorized";
+type AuthenticationStatus = "unknown" | "authenticated" | "unauthenticated";
+
+interface CalllbackRoute {
+  name: string;
+  fullPath: string;
+  meta: RouteMeta;
+}
 
 interface AuthState {
   user: Nullable<User>;
-  status: AuthStatus;
+  status: AuthenticationStatus;
+  callbackRoute: Nullable<CalllbackRoute>;
 }
 
 export const useAuthStore = defineStore("auth", {
-  state: (): AuthState => ({ user: null, status: "initial" }),
+  state: (): AuthState => ({
+    user: null,
+    status: "unknown",
+    callbackRoute: null,
+  }),
   getters: {
-    isInitial(): boolean {
-      return this.status === "initial";
-    },
-    isAuthorized(): boolean {
-      return this.status === "authorized";
-    },
-    isUnauthorized(): boolean {
-      return this.status === "unauthorized";
-    },
+    isUnknown: (state): boolean => state.status === "unknown",
+    isAuthenticated: (state): boolean => state.status === "authenticated",
+    isUnauthenticated: (state): boolean => state.status === "unauthenticated",
   },
   actions: {
     async loadUser() {
-      const expired = storage.getExpired();
-      if (!isNonNullable(expired)) {
-        this.status = "unauthorized";
+      if (isDev) {
+        const getMe = async (): Promise<void> => {
+          const user = await loadUser();
+          this.$patch({
+            user,
+            status: "authenticated",
+          });
+        };
 
-        return;
-      }
+        try {
+          await getMe();
+        } catch {
+          try {
+            await refresh();
+            await getMe();
+          } catch {
+            this.status = "unauthenticated";
+          }
+        }
+      } else {
+        const expired = storage.getExpired();
+        if (!isNonNullable(expired)) {
+          this.status = "unauthenticated";
 
-      const parsedExpired = parseExpired(expired);
-
-      console.log(parsedExpired);
-
-      try {
-        if (isBeforeExpired(parsedExpired)) {
-          await refresh();
+          return;
         }
 
-        const user = await loadUser();
-        this.$patch({
-          user,
-          status: "authorized",
-        });
-      } catch {
-        this.status = "unauthorized";
+        const parsedExpired = parseExpired(expired);
+
+        try {
+          if (isBeforeExpired(parsedExpired)) {
+            await refresh();
+          }
+
+          const user = await loadUser();
+          this.$patch({
+            user,
+            status: "authenticated",
+          });
+        } catch {
+          this.status = "unauthenticated";
+        }
       }
-
-      // const getMe = async (): Promise<void> => {
-      //   const user = await loadUser();
-      //   this.$patch({
-      //     user,
-      //     status: "authorized",
-      //   });
-      // };
-
-      // try {
-      //   await getMe();
-      // } catch {
-      //   try {
-      //     await refresh();
-      //     await getMe();
-      //   } catch {
-      //     this.status = "unauthorized";
-      //   }
-      // }
     },
     async login(payload: LoginCredentialsPayload) {
       await login(payload);
@@ -85,8 +92,11 @@ export const useAuthStore = defineStore("auth", {
 
       this.$patch({
         user,
-        status: "authorized",
+        status: "authenticated",
       });
+    },
+    setCalllbackRoute(route: CalllbackRoute) {
+      this.callbackRoute = route;
     },
   },
 });

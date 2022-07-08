@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import ApplicationFormsView from "@/features/application-forms/views/ApplicationFormsView.vue";
-import { authGuard } from "@/features/auth";
+import {
+  initialGuard,
+  authenticationGuard,
+  authorizationGuard,
+} from "@/features/auth";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,24 +19,50 @@ const router = createRouter({
     {
       path: "/application-forms",
       name: "applicationForms",
-      meta: { typeOfPublicity: "private" },
+      meta: {
+        typeOfPublicity: "private",
+        allowedRoles: ["SecretaryCommission"],
+      },
       component: ApplicationFormsView,
     },
     {
-      path: "/agendas",
-      name: "agendas",
-      meta: { typeOfPublicity: "private" },
-      component: () => import("@/features/agendas/views/AgendasView.vue"),
+      path: "/summons",
+      name: "summons",
+      meta: {
+        typeOfPublicity: "private",
+        allowedRoles: ["SecretaryCommission", "MemberCommission"],
+      },
+      component: () => import("@/features/summons/views/SummonsView.vue"),
     },
     {
       path: "/protocols",
       name: "protocols",
-      meta: { typeOfPublicity: "private" },
+      meta: {
+        typeOfPublicity: "private",
+        allowedRoles: ["SecretaryCommission", "MemberCommission"],
+      },
       component: () => import("@/features/protocols/views/ProtocolsView.vue"),
+    },
+    {
+      path: "/users",
+      name: "users",
+      meta: {
+        typeOfPublicity: "private",
+        allowedRoles: ["Admin"],
+      },
+      component: () => import("@/features/users/views/UsersView.vue"),
+    },
+    {
+      path: "/logs",
+      name: "logs",
+      meta: { typeOfPublicity: "private", allowedRoles: ["Admin"] },
+      component: () => import("@/features/logs/views/LogsView.vue"),
     },
   ],
 });
 
-router.beforeEach(authGuard);
+router.beforeEach(initialGuard);
+router.beforeEach(authenticationGuard);
+router.beforeEach(authorizationGuard);
 
 export default router;

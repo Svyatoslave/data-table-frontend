@@ -1,3 +1,5 @@
+import type { SelectOptions } from "@/shared/types/select";
+
 export type RowData = Record<string, unknown>;
 
 export type GetRowKeyFn<T extends RowData> = (
@@ -5,10 +7,68 @@ export type GetRowKeyFn<T extends RowData> = (
   idx: number
 ) => string | number;
 
+export type IsDisabledRowFn<T extends RowData> = (
+  row: T,
+  idx: number
+) => boolean;
+
+// sorting
+
+export interface AvailableColumnSortOptions {
+  sortable: true;
+  sortField: string;
+}
+
+export interface NonColumnSortOptions {
+  sortable: false;
+}
+
+export type ColumnSortOptions =
+  | AvailableColumnSortOptions
+  | NonColumnSortOptions;
+
+// filtering
+
+export interface NonColumnFilterOptions {
+  filterable: false;
+}
+
+export interface BaseColumnFilterOptions {
+  filterable: true;
+  filterField: string;
+}
+
+export interface PrimitiveColumnFilterOptions extends BaseColumnFilterOptions {
+  filterType: "primitive";
+}
+
+export interface CommonColumnFilterOptions extends BaseColumnFilterOptions {
+  filterType: "common";
+}
+
+export interface MultiSelectColumnFilterOptions
+  extends BaseColumnFilterOptions {
+  filterType: "multi-select";
+  getOptions: () => Promise<SelectOptions<string | number>>;
+}
+
+export type AvailableColumnFilterOptions =
+  | PrimitiveColumnFilterOptions
+  | CommonColumnFilterOptions
+  | MultiSelectColumnFilterOptions;
+
+export type ColumnFilterOptions =
+  | NonColumnFilterOptions
+  | AvailableColumnFilterOptions;
+
+// column
+
 interface BaseColumn {
   key: string;
   headerName: string;
   width?: string;
+  sortOptions: ColumnSortOptions;
+  filterOptions: ColumnFilterOptions;
 }
 
 export interface TableStandardColumn<T extends RowData> extends BaseColumn {
@@ -39,3 +99,10 @@ export type TableColumn<T extends RowData> =
   | TableSlotColumn;
 
 export type TableColumns<T extends RowData> = TableColumn<T>[];
+
+export interface TableRowCtx<T extends RowData> {
+  disabled: boolean;
+  row: T;
+  idx: number;
+  column: TableColumn<T>;
+}

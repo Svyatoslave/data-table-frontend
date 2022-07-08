@@ -1,10 +1,12 @@
 import "vue-router";
+import type { UserRoleName } from "@/features/users";
 
 type PublicityType = "public" | "private" | "shared";
 
 declare module "vue-router" {
   interface RouteMeta {
     typeOfPublicity: PublicityType;
+    allowedRoles?: UserRoleName[];
   }
 }
 
