@@ -12,32 +12,17 @@ import {
 } from "@/lib/api";
 import { axios } from "@/lib/axios";
 import { PROTOCOLS_API_URL } from "@/shared/config";
-import type { Nullable } from "@/shared/types/utility";
-import type { ApplicationForm } from "@/features/application-forms";
+import {
+  mapApplicationFormFromDto,
+  type ApplicationForm,
+  type ApplicationFormDto,
+} from "@/features/application-forms";
 
 interface GetApplicationFormsPayload {
   pagination: PaginationPayload;
   sort: SortPayload;
   filters: FiltersPayload;
 }
-
-interface ApplicationFormDto {
-  id: number;
-  type_application_form_text: string;
-  complainant: string;
-  created_at: string;
-  summary_info: Nullable<string>;
-}
-
-const mapApplicationFormFromDto = (
-  applicationFormDto: ApplicationFormDto
-): ApplicationForm => ({
-  id: applicationFormDto.id,
-  typeApplicationFormText: applicationFormDto.type_application_form_text,
-  complainant: applicationFormDto.complainant,
-  createdAt: new Date(applicationFormDto.created_at),
-  summaryInfo: applicationFormDto.summary_info,
-});
 
 export const getApplicationForms = async (
   payload: GetApplicationFormsPayload

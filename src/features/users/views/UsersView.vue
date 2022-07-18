@@ -3,7 +3,23 @@
     <title>{{ createHeadTitle("Пользователи") }}</title>
   </Head>
   <PageLayout>
-    <ETypography variant="title1">Пользователи</ETypography>
+    <template #header>
+      <div class="users-view__header">
+        <SidebarFiller />
+        <ContentContainer>
+          <TableHead :columns="columns" />
+        </ContentContainer>
+      </div>
+    </template>
+    <template #default>
+      <TableBody
+        :loading="isFetching"
+        :rows="data?.items"
+        :columns="columns"
+        :get-row-key="getRowKey"
+        :is-disabled-row="() => false"
+      />
+    </template>
   </PageLayout>
 </template>
 
@@ -11,8 +27,23 @@
 import { Head } from "@vueuse/head";
 
 import { createHeadTitle } from "@/shared/utils/meta";
-import { PageLayout } from "@/shared/components/layouts";
-import { ETypography } from "@/shared/components/data-display";
+import { TableBody, TableHead } from "@/shared/components/data-display";
+import {
+  PageLayout,
+  ContentContainer,
+  SidebarFiller,
+} from "@/shared/components/layouts";
+import { useUsersTable } from "@/features/users";
+
+const {
+  columns,
+  usersQuery: { data, isFetching },
+  getRowKey,
+} = useUsersTable();
 </script>
 
-<style scoped></style>
+<style scoped>
+.users-view__header {
+  display: flex;
+}
+</style>

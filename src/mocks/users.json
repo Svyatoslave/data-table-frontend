@@ -1,0 +1,75 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "login": "smirnovss",
+      "name": "Сергей",
+      "surname": "Смирнов",
+      "patronymic": "Сергеевич",
+      "email": "smirnovss@gmail.com",
+      "numberPhone": "89099999999",
+      "organizationName": "Общество с ограниченной ответственностью «Геомаркет»",
+      "role": {
+        "id": "1",
+        "name": "SecretaryCommission"
+      }
+    },
+    {
+      "id": "2",
+      "login": "savel'eva",
+      "name": "Нина",
+      "surname": "Савельева",
+      "patronymic": "Александрова",
+      "email": "savel'eva@gmail.com",
+      "numberPhone": "84959358780",
+      "organizationName": "ООО «Газпром недра»",
+      "role": {
+        "id": "2",
+        "name": "MemberCommission"
+      }
+    },
+    {
+      "id": "3",
+      "login": "morozova",
+      "name": "Ангелина",
+      "surname": "Морозова",
+      "patronymic": "Валерьевна",
+      "email": "morozova@gmail.com",
+      "numberPhone": "83452520061",
+      "organizationName": "«Северогеофизика» северное геофизическое предприятие ОАО в структуре ПАО «ГЕОТЕК Сейсморазведка»",
+      "role": {
+        "id": "2",
+        "name": "MemberCommission"
+      }
+    },
+    {
+      "id": "4",
+      "login": "rimskij-korsakov",
+      "name": "Сергей",
+      "surname": "Римский-Корсаков",
+      "patronymic": "Сергеевич",
+      "email": "rimskij-korsakov@gmail.com",
+      "numberPhone": "84959358200",
+      "organizationName": "Геотек Сейсморазведка ПАО",
+      "role": {
+        "id": "1",
+        "name": "SecretaryCommission"
+      }
+    },
+    {
+      "id": "5",
+      "login": "konstantinovskij-kuz'min",
+      "name": "Никита",
+      "surname": "Константиновский-Кузьмин",
+      "patronymic": "Александрова",
+      "email": "konstantinovskij-kuz'min@gmail.com",
+      "numberPhone": "83452520447",
+      "organizationName": "Группа компаний Schlumberger",
+      "role": {
+        "id": "3",
+        "name": "Admin"
+      }
+    }
+  ],
+  "total": 5
+}

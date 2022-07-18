@@ -1,18 +1,26 @@
 <template>
   <div class="file-link">
-    <InlineLink :reference="reference" class="inline-link"
+    <InlineLink
+      :disabled="disabled"
+      :color="color"
+      :reference="reference"
+      class="inline-link"
       ><slot></slot> <template #end-icon><DownloadIcon /></template
     ></InlineLink>
   </div>
 </template>
 
 <script setup lang="ts">
-import { InlineLink } from "@/shared/components/navigation";
+import { InlineLink, type ColorKind } from "@/shared/components/navigation";
 import { DownloadIcon } from "@/shared/components/icons";
-export interface InlineLinkProps {
+
+export interface FileLinkProps {
+  disabled?: boolean;
   reference: string;
+  color?: ColorKind;
 }
-defineProps<InlineLinkProps>();
+
+defineProps<FileLinkProps>();
 </script>
 
 <style scoped></style>

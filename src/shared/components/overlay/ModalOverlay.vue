@@ -51,6 +51,6 @@ watch(
   display: flex;
   align-items: center;
   transition: opacity 0.3s ease;
-  z-index: 10000;
+  z-index: 1000;
 }
 </style>

@@ -1,72 +1,26 @@
 <template>
   <ModalOverlay :visible="isNonEmptyDetailId">
     <EModal
-      title="Подробная информация о заявке"
+      full-height
       :visible="isNonEmptyDetailId"
+      title="Подробная информация о заявке"
       @update:visible="handleUpdateVisible"
     >
-      <div v-if="isNonNullable(detailApplicationForm)" class="dafm">
+      <LoadingOverlay :visible="isFetching" />
+      <div v-if="isNonNullable(data)" class="dafm">
         <div class="dafm__content">
-          <ETypography class="dafm__text" variant="body2">ID:</ETypography>
-          <ETypography class="dafm__text" variant="body2">{{
-            detailApplicationForm.id
+          <ETypography class="dafm__text" variant="body4">ID:</ETypography>
+          <ETypography class="dafm__text" variant="body4">{{
+            data.id
           }}</ETypography>
-          <ETypography class="dafm__text" variant="body2">
+          <ETypography class="dafm__text" variant="body4">
             Тип процедуры:
           </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            {{ detailApplicationForm.typeApplicationFormText }}
+          <ETypography class="dafm__text" variant="body4">
+            {{ data.typeApplicationForm }}
           </ETypography>
         </div>
-        <ETypography variant="title2" class="dafm__subtitle">
-          Сведения о заявителе:
-        </ETypography>
-        <div class="dafm__content">
-          <ETypography class="dafm__text" variant="body2">
-            Заявитель:
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Общество с ограниченной ответственностью «Геомаркет»
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Организационно правовая форма:
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Общество с ограниченной ответственностью
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2"> ОГРН: </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            1053600591197
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2"> ИНН: </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            3664069397
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Вид полезного ископаемого:
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">нефть</ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Субьект РФ:
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Астраханская область
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2"
-            >Дата, время:</ETypography
-          >
-          <ETypography class="dafm__text" variant="body2">
-            20.04.22 10:30
-          </ETypography>
-          <ETypography class="dafm__text" variant="body2">
-            Комплект документов:
-          </ETypography>
-          <FileLink
-            reference="https://www.figma.com/file/EyJzN50eJkdjDFHIO0u8BW/%D0%A0%D0%BE%D1%81%D0%BD%D0%B5%D0%B4%D1%80%D0%B0-(devs)?node-id=303%3A12479"
-          >
-            Название файла.pdf
-          </FileLink>
-        </div>
+        <EarlyTerminationInfo :early-termination="data" />
       </div>
     </EModal>
   </ModalOverlay>
@@ -75,14 +29,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { PaginatedDto } from "@/lib/api";
-import { queryClient } from "@/lib/vue-query";
 import { ETypography } from "@/shared/components/data-display";
-import { EModal, ModalOverlay } from "@/shared/components/overlay";
-import { FileLink } from "@/shared/components/navigation";
+import {
+  EModal,
+  ModalOverlay,
+  LoadingOverlay,
+} from "@/shared/components/overlay";
 import type { Nullable } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
-import type { ApplicationForm } from "@/features/application-forms";
+import {
+  EarlyTerminationInfo,
+  useApplicationForm,
+} from "@/features/application-forms";
 
 export interface DetailApplicationFormModalProps {
   queryKey: unknown[];
@@ -97,33 +55,19 @@ const props = defineProps<DetailApplicationFormModalProps>();
 
 const emit = defineEmits<DetailApplicationFormModalEmits>();
 
+const applicationFormID = computed(
+  (): Nullable<string> => String(props.detailId)
+);
+const enabled = computed((): boolean => isNonNullable(props.detailId));
+
+const { data, isFetching } = useApplicationForm({
+  applicationFormID,
+  enabled,
+});
+
 const isNonEmptyDetailId = computed((): boolean =>
   isNonNullable(props.detailId)
 );
-
-// eslint-disable-next-line vue/return-in-computed-property
-const detailApplicationForm = computed((): Nullable<ApplicationForm> => {
-  if (!isNonNullable(props.detailId)) {
-    return null;
-  }
-
-  const applicationForms = queryClient.getQueryData<
-    PaginatedDto<ApplicationForm>
-  >(props.queryKey);
-
-  if (!isNonNullable(applicationForms)) {
-    return null;
-  }
-
-  const existApplicationForm = applicationForms.items.find(
-    (applicationForm) => applicationForm.id === props.detailId
-  );
-  if (!isNonNullable(existApplicationForm)) {
-    return null;
-  }
-
-  return existApplicationForm;
-});
 
 const handleUpdateVisible = () => {
   emit("clear-detail-id");
@@ -135,9 +79,10 @@ const handleUpdateVisible = () => {
   display: grid;
   grid-row-gap: 20px;
 }
+
 .dafm__content {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1fr;
   grid-row-gap: 10px;
 }
 .dafm__subtitle {

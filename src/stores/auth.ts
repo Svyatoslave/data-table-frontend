@@ -13,6 +13,7 @@ import {
   isBeforeExpired,
   type LoginCredentialsPayload,
   parseExpired,
+  logout,
 } from "@/features/auth";
 
 type AuthenticationStatus = "unknown" | "authenticated" | "unauthenticated";
@@ -93,6 +94,15 @@ export const useAuthStore = defineStore("auth", {
       this.$patch({
         user,
         status: "authenticated",
+      });
+    },
+    async logout() {
+      await logout();
+
+      this.$patch({
+        user: null,
+        status: "unauthenticated",
+        callbackRoute: null,
       });
     },
     setCalllbackRoute(route: CalllbackRoute) {

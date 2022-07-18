@@ -16,8 +16,9 @@
         :loading="isFetching"
         :rows="data?.items"
         :columns="columns"
-        :get-row-key="getRowKey"
         :is-disabled-row="isNonSelectedType"
+        :get-row-key="getRowKey"
+        :get-tooltip-row="getTooltipRow"
       >
         <template #selection="{ disabled, row }: TableRowCtx<ApplicationForm>">
           <div class="aftv__row-selection">
@@ -27,10 +28,10 @@
               class="aftv__checkbox"
               @update:checked="changeSelectable(row)"
             />
-            <span>{{ row.id }}</span>
+            <span class="aftv__row-selection-id">{{ row.id }}</span>
             <LinkIcon
               :disabled="disabled"
-              class="aftv__link-icon"
+              class="aftv__row-selection-icon"
               @click="selectDetailId(row)"
             />
           </div>
@@ -78,6 +79,7 @@
 import { useQuery } from "vue-query";
 import { Head } from "@vueuse/head";
 
+import { dayjs } from "@/lib/day-js";
 import { createHeadTitle } from "@/shared/utils/meta";
 import { EButton, ECheckbox } from "@/shared/components/inputs";
 import {
@@ -93,6 +95,7 @@ import {
   type TableColumns,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type TableRowCtx,
+  type GetTooltipRowFn,
 } from "@/shared/components/data-display";
 import {
   PageLayout,
@@ -137,13 +140,34 @@ const columns: TableColumns<ApplicationFormRow> = [
       filterField: "searchId",
       filterType: "primitive",
     },
+    tooltipOptions: {
+      tooltiped: true,
+      сomputed: (row) => row.id,
+    },
+  },
+  {
+    key: "license",
+    type: "сomputed",
+    сomputed: () => "Нет данных",
+    headerName: "Номер лицензии",
+    width: "147px",
+    sortOptions: {
+      sortable: false,
+    },
+    filterOptions: {
+      filterable: false,
+    },
+    tooltipOptions: {
+      tooltiped: true,
+      сomputed: () => "Нет данных",
+    },
   },
   {
     key: "type",
     type: "standard",
     field: "typeApplicationFormText",
     headerName: "Вид заявки",
-    width: "858px",
+    width: "525px",
     sortOptions: {
       sortable: true,
       sortField: "2",
@@ -157,13 +181,51 @@ const columns: TableColumns<ApplicationFormRow> = [
           data.items.map(({ id, name }) => ({ value: id, label: name }))
         ),
     },
+    tooltipOptions: {
+      tooltiped: false,
+    },
+  },
+
+  {
+    key: "name",
+    type: "сomputed",
+    сomputed: () => "Нет данных",
+    headerName: "Наименование участка недр",
+    width: "147px",
+    sortOptions: {
+      sortable: false,
+    },
+    filterOptions: {
+      filterable: false,
+    },
+    tooltipOptions: {
+      tooltiped: true,
+      сomputed: () => "Нет данных",
+    },
+  },
+  {
+    key: "subject",
+    type: "сomputed",
+    сomputed: () => "Нет данных",
+    headerName: "Субьъект РФ",
+    width: "147px",
+    sortOptions: {
+      sortable: false,
+    },
+    filterOptions: {
+      filterable: false,
+    },
+    tooltipOptions: {
+      tooltiped: true,
+      сomputed: () => "Нет данных",
+    },
   },
   {
     key: "complainant",
     type: "standard",
     field: "complainant",
     headerName: "Заявитель",
-    width: "393px",
+    width: "270px",
     sortOptions: {
       sortable: true,
       sortField: "3",
@@ -173,13 +235,17 @@ const columns: TableColumns<ApplicationFormRow> = [
       filterField: "searchComplainant",
       filterType: "common",
     },
+    tooltipOptions: {
+      tooltiped: true,
+      сomputed: (row) => row.complainant,
+    },
   },
   {
     key: "date",
     type: "date",
     field: "createdAt",
     headerName: "Дата и время",
-    width: "151px",
+    width: "170px",
     sortOptions: {
       sortable: true,
       sortField: "4",
@@ -187,12 +253,14 @@ const columns: TableColumns<ApplicationFormRow> = [
     filterOptions: {
       filterable: false,
     },
+    tooltipOptions: {
+      tooltiped: true,
+      сomputed: (row) => dayjs(row.createdAt).format("DD.MM.YY HH:mm"),
+    },
   },
 ];
 
-const getRowKey: GetRowKeyFn<ApplicationForm> = (row) => row.id;
-
-const { total, page, pageSize } = usePagination();
+const { total, page, pageSize, resetPagination } = usePagination();
 
 const {
   selectable,
@@ -207,10 +275,18 @@ const {
 
 const { detailId, selectDetailId, clearDetailId } = useApplicationFormDetail();
 
-const filterable = useFilterable();
+const filterable = useFilterable({
+  onChange: () => {
+    resetPagination();
+  },
+});
 useProvideFilterable(filterable);
 
-const sortable = useSortable();
+const sortable = useSortable({
+  onChange: () => {
+    resetPagination();
+  },
+});
 useProvideSortable(sortable);
 
 const queryKey = [
@@ -234,6 +310,13 @@ const { data, isFetching, refetch } = useQuery(
   }
 );
 
+const getRowKey: GetRowKeyFn<ApplicationForm> = (row) => row.id;
+
+const getTooltipRow: GetTooltipRowFn<ApplicationForm> = (row) =>
+  isNonSelectedType(row)
+    ? "Множественные операции возможны только с заявками одного вида"
+    : null;
+
 const handleSuccess = () => {
   clearSelected();
   refetch.value();
@@ -249,5 +332,17 @@ const handleSuccess = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.aftv__row-selection-id {
+  max-width: 78px;
+  margin: 0 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aftv__row-selection-icon {
+  flex: 0 0 auto;
 }
 </style>

@@ -1,0 +1,47 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "object": "Заявка Newsarticle от 23.05.22",
+      "author": {
+        "id": "1",
+        "login": "smirnovss",
+        "name": "Сергей",
+        "surname": "Смирнов",
+        "patronymic": "Сергеевич",
+        "email": "smirnovss@gmail.com",
+        "numberPhone": "89099999999",
+        "organizationName": "Общество с ограниченной ответственностью «Геомаркет»",
+        "role": {
+          "id": "1",
+          "name": "SecretaryCommission"
+        }
+      },
+      "action": "create",
+      "date": "2022-07-13T07:43:02.535516Z",
+      "ip": null
+    },
+    {
+      "id": "2",
+      "object": "Проект протокола заседания аккредитационной подкомиссии по итогам проведения аккредитации специалистов от 23.05.22",
+      "author": {
+        "id": "1",
+        "login": "smirnovss",
+        "name": "Сергей",
+        "surname": "Смирнов",
+        "patronymic": "Сергеевич",
+        "email": "smirnovss@gmail.com",
+        "numberPhone": "89099999999",
+        "organizationName": "Общество с ограниченной ответственностью «Геомаркет»",
+        "role": {
+          "id": "1",
+          "name": "SecretaryCommission"
+        }
+      },
+      "action": "update",
+      "date": "2022-07-20T07:43:02.535516Z",
+      "ip": null
+    }
+  ],
+  "total": 2
+}

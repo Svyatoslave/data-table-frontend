@@ -1,7 +1,7 @@
 <template>
   <div class="badge">
     <slot></slot>
-    <ETypography variant="title3" class="badge__some">
+    <ETypography tag="span" variant="title3" class="badge__some">
       <slot name="content"></slot>
     </ETypography>
   </div>
@@ -14,6 +14,7 @@ import { ETypography } from "@/shared/components/data-display";
 <style scoped>
 .badge {
   position: relative;
+  display: flex;
 }
 
 .badge__some {

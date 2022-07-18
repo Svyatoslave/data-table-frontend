@@ -1,6 +1,6 @@
 <template>
   <button type="button" class="pagination__button">
-    <ETypography variant="body4" class="pagination__button_text">
+    <ETypography variant="body10" class="pagination__button_text">
       <slot></slot>
     </ETypography>
   </button>

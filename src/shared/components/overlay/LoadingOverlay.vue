@@ -1,10 +1,14 @@
 <template>
   <Transition>
-    <div v-show="visible" class="loading-overlay">
+    <div
+      v-if="visible"
+      class="loading-overlay"
+      :class="{ [`loading-overlay--fixed`]: fixed }"
+    >
       <LoadingIcon :size="40" class="loading-overlay__icon" />
-      <ETypography variant="body9" class="loading-overlay__text"
-        >Загрузка</ETypography
-      >
+      <ETypography variant="body9" class="loading-overlay__text">
+        Загрузка
+      </ETypography>
       <div class="loading-overlay__some"></div>
     </div>
   </Transition>
@@ -15,10 +19,13 @@ import { LoadingIcon } from "@/shared/components/icons";
 import { ETypography } from "@/shared/components/data-display";
 
 export interface LoadingOverlayProps {
+  fixed?: boolean;
   visible: boolean;
 }
 
-defineProps<LoadingOverlayProps>();
+withDefaults(defineProps<LoadingOverlayProps>(), {
+  fixed: false,
+});
 </script>
 
 <style scoped>
@@ -42,7 +49,14 @@ defineProps<LoadingOverlayProps>();
   justify-content: center;
   align-items: center;
   gap: 10px;
-  z-index: 2000;
+  z-index: 200;
+}
+
+.loading-overlay--fixed {
+  position: fixed;
+  margin-top: var(--header-full-height);
+  margin-left: var(--sidebar-width);
+  margin-bottom: var(--footer-height);
 }
 
 .loading-overlay__some {
@@ -50,14 +64,14 @@ defineProps<LoadingOverlayProps>();
   inset: 0px;
   opacity: 0.5;
   background-color: var(--white-color);
-  z-index: 1000;
+  z-index: 100;
 }
 
 .loading-overlay__icon {
-  z-index: 1001;
+  z-index: 101;
 }
 .loading-overlay__text {
   color: var(--blue-color);
-  z-index: 1001;
+  z-index: 101;
 }
 </style>

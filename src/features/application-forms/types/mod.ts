@@ -1,4 +1,5 @@
 import type { Nullable } from "@/shared/types/utility";
+import type { EarlyTerminationApplicationForm } from "./early-termination";
 
 export type ApplicationForm = {
   id: number;
@@ -8,7 +9,4 @@ export type ApplicationForm = {
   summaryInfo: Nullable<string>;
 };
 
-export interface ApplicationFormType {
-  id: number;
-  name: string;
-}
+export type DetailApplicationForm = EarlyTerminationApplicationForm;

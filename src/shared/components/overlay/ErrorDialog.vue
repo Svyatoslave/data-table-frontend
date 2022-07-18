@@ -11,7 +11,7 @@
         </ETypography>
       </div>
 
-      <ETypography variant="body2" class="modal__subtitle">
+      <ETypography variant="body4" class="modal__subtitle">
         {{ subtitle }}
       </ETypography>
     </div>

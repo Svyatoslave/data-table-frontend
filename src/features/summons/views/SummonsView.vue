@@ -4,7 +4,7 @@
   </Head>
   <PageLayout>
     <template #header>
-      <div class="aftv__header">
+      <div class="summons-view__header">
         <SidebarFiller />
         <ContentContainer>
           <TableHead :columns="columns" />
@@ -17,8 +17,20 @@
         :rows="data?.items"
         :columns="columns"
         :get-row-key="getRowKey"
-        :is-disabled-row="() => false"
-      />
+      >
+        <template #selection="{ disabled, row }: TableRowCtx<Summon>">
+          <div class="summons-view__row-selection">
+            <span>{{ row.id }}</span>
+            <RouterLink
+              custom
+              :to="`/summons/${row.id}/application-forms`"
+              v-slot="{ navigate }"
+            >
+              <LinkIcon :disabled="disabled" @click="navigate" />
+            </RouterLink>
+          </div>
+        </template>
+      </TableBody>
     </template>
     <template #footer>
       <div></div>
@@ -30,7 +42,7 @@
           :per-page="5"
         />
         <PaginationInfo
-          text="Показаны заявки"
+          text="Показаны повестки"
           :page="page"
           :page-size="pageSize"
           :total="total"
@@ -41,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+import { RouterLink } from "vue-router";
 import { useQuery } from "vue-query";
 import { Head } from "@vueuse/head";
 
@@ -56,25 +69,27 @@ import {
   useProvideFilterable,
   type GetRowKeyFn,
   type TableColumns,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type TableRowCtx,
 } from "@/shared/components/data-display";
 import {
   PageLayout,
   ContentContainer,
   SidebarFiller,
 } from "@/shared/components/layouts";
+import { LinkIcon } from "@/shared/components/icons";
 import { isNonNullable } from "@/shared/utils/equal";
-import { getApplicationFormTypes } from "@/features/application-forms";
 import { usePagination } from "@/shared/composables";
-import type { Summon } from "../types";
-import { getSummons } from "../api/get-summons";
+import { getApplicationFormTypes } from "@/features/application-forms";
+import { getSummons, type Summon } from "@/features/summons";
 
 const columns: TableColumns<Summon> = [
   {
     key: "id",
-    type: "standard",
-    field: "id",
+    type: "slot",
     headerName: "ID",
-    width: "150px",
+    slotName: "selection",
+    width: "174px",
     sortOptions: {
       sortable: true,
       sortField: "1",
@@ -83,6 +98,9 @@ const columns: TableColumns<Summon> = [
       filterable: true,
       filterField: "searchId",
       filterType: "primitive",
+    },
+    tooltipOptions: {
+      tooltiped: false,
     },
   },
   {
@@ -104,6 +122,9 @@ const columns: TableColumns<Summon> = [
           data.items.map(({ id, name }) => ({ value: id, label: name }))
         ),
     },
+    tooltipOptions: {
+      tooltiped: false,
+    },
   },
   {
     key: "meetingAt",
@@ -117,6 +138,9 @@ const columns: TableColumns<Summon> = [
     },
     filterOptions: {
       filterable: false,
+    },
+    tooltipOptions: {
+      tooltiped: false,
     },
   },
   {
@@ -132,17 +156,28 @@ const columns: TableColumns<Summon> = [
     filterOptions: {
       filterable: false,
     },
+    tooltipOptions: {
+      tooltiped: false,
+    },
   },
 ];
 
 const getRowKey: GetRowKeyFn<Summon> = (row) => row.id;
 
-const { total, page, pageSize } = usePagination();
+const { total, page, pageSize, resetPagination } = usePagination();
 
-const filterable = useFilterable();
+const filterable = useFilterable({
+  onChange: () => {
+    resetPagination();
+  },
+});
 useProvideFilterable(filterable);
 
-const sortable = useSortable();
+const sortable = useSortable({
+  onChange: () => {
+    resetPagination();
+  },
+});
 useProvideSortable(sortable);
 
 const queryKey = [
@@ -168,11 +203,11 @@ const { data, isFetching } = useQuery(
 </script>
 
 <style scoped>
-.aftv__header {
+.summons-view__header {
   display: flex;
 }
 
-.aftv__row-selection {
+.summons-view__row-selection {
   display: flex;
   justify-content: space-between;
   align-items: center;

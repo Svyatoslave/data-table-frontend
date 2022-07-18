@@ -1,11 +1,12 @@
 <template>
-  <LoadingOverlay :visible="loading" class="table-body__loading-overlay" />
-  <table v-if="isNonNullable(rows)" class="table-body__wrapper">
+  <LoadingOverlay fixed :visible="loading" />
+  <table v-if="isNonNullableRows" class="table-body__wrapper">
     <tbody ref="tableRef" class="table-body">
       <TableBodyRow
         v-for="(row, idx) in rows"
         :key="getRowKey(row, idx)"
         :disabled="isDisabledRow(row, idx)"
+        :tooltip="getTooltipRow(row, idx)"
         :idx="idx"
         :row="row"
         :columns="columns"
@@ -29,13 +30,11 @@ import {
   TableBodyRow,
   type TableColumns,
   type RowData,
-  type GetRowKeyFn,
   type TableSlotColumn,
-  type IsDisabledRowFn,
 } from "@/shared/components/data-display";
 import { LoadingOverlay } from "@/shared/components/overlay";
 import { createMeasurableProp } from "@/shared/utils/styles";
-import type { Optional } from "@/shared/types/utility";
+import type { Nullable, Optional } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
 import {
   documentDisabledScroll,
@@ -50,21 +49,24 @@ export interface TableBody<T extends RowData = RowData> {
   rows: Optional<T[]>;
   loading: boolean;
   columns: TableColumns<DefaultRowData>;
-  getRowKey: GetRowKeyFn<DefaultRowData>;
-  isDisabledRow?: IsDisabledRowFn<DefaultRowData>;
+  isDisabledRow?: (row: DefaultRowData, idx: number) => boolean;
+  getRowKey: (row: DefaultRowData, idx: number) => string | number;
+  getTooltipRow?: (row: DefaultRowData, idx: number) => Nullable<string>;
 }
 
 const props = withDefaults(defineProps<TableBody>(), {
   isDisabledRow: () => false,
+  getTooltipRow: () => null,
 });
-
-const customColumns = computed(
-  () => props.columns.filter(({ type }) => type === "slot") as TableSlotColumn[]
-);
 
 const tableRef = ref(null);
 const { width } = useElementSize(tableRef);
 const headerFullHeightVar = useCssVar("--table-width");
+
+const isNonNullableRows = computed((): boolean => isNonNullable(props.rows));
+const customColumns = computed(
+  () => props.columns.filter(({ type }) => type === "slot") as TableSlotColumn[]
+);
 
 watch(width, (currentWidth) => {
   headerFullHeightVar.value = createMeasurableProp(currentWidth);
@@ -89,13 +91,6 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 10px 0;
-}
-
-.table-body__loading-overlay {
-  position: fixed;
-  margin-top: var(--header-full-height);
-  margin-left: var(--sidebar-width);
-  margin-bottom: var(--footer-height);
 }
 
 .table-body__wrapper {

@@ -14,10 +14,11 @@ const defaultOptions: UsePaginationOptions = {
   initialPageSize: 30,
 };
 
-interface UsePaginationReturn {
+export interface UsePaginationReturn {
   total: Ref<Nullable<number>>;
   page: Ref<number>;
   pageSize: Ref<number>;
+  resetPagination: () => void;
 }
 
 export const usePagination = (
@@ -27,9 +28,15 @@ export const usePagination = (
   const page = ref<number>(options.initialPage);
   const pageSize = ref<number>(options.initialPageSize);
 
+  const resetPagination = () => {
+    page.value = options.initialPage;
+    pageSize.value = options.initialPageSize;
+  };
+
   return {
     total,
     page,
     pageSize,
+    resetPagination,
   };
 };

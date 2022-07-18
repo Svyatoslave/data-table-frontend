@@ -1,61 +1,63 @@
 <template>
-  <form class="login-form" @submit="onSubmit">
-    <NFormItem
-      required
-      label="Логин"
-      :validation-status="errors.login ? 'error' : 'success'"
-      :feedback="errors.login"
-    >
-      <NInput
-        size="large"
-        :input-props="{ name: 'login' }"
-        v-model:value="login"
-      />
-    </NFormItem>
-    <NFormItem
-      required
-      label="Пароль"
-      :validation-status="errors.password ? 'error' : 'success'"
-      :feedback="errors.password"
-    >
-      <NInput
-        type="password"
-        size="large"
-        :input-props="{ name: 'password' }"
-        show-password-on="mousedown"
-        v-model:value="password"
-      />
-    </NFormItem>
-    <NButton
-      block
-      :loading="isSubmitting"
-      :disabled="isSubmitting"
-      type="primary"
-      attr-type="submit"
-      size="large"
-      class="login-form__button-submit"
-    >
-      Войти
-    </NButton>
-    <NDivider />
-    <NButton
-      block
-      disabled
-      tag="a"
-      size="large"
-      class="login-form__button-esia"
-    >
-      Войти через госуслуги (ЕСИА)
-    </NButton>
-  </form>
+  <div style="width: 100%">
+    <form class="login-form" @submit="onSubmit">
+      <NFormItem
+        :show-label="false"
+        required
+        :validation-status="errors.login ? 'error' : 'success'"
+        :feedback="errors.login"
+      >
+        <NInput
+          :input-props="{ name: 'login' }"
+          v-model:value="login"
+          placeholder="Логин"
+        />
+      </NFormItem>
+      <NFormItem
+        :show-label="false"
+        required
+        :validation-status="errors.password ? 'error' : 'success'"
+        :feedback="errors.password"
+      >
+        <NInput
+          type="password"
+          :input-props="{ name: 'password' }"
+          show-password-on="mousedown"
+          v-model:value="password"
+          placeholder="Пароль"
+        />
+      </NFormItem>
+      <div class="login-form__actions">
+        <EButton
+          type="submit"
+          :loading="isSubmitting"
+          :disabled="isSubmitting"
+          class="login-form__button-submit"
+          color="primary"
+          variant="contained"
+        >
+          Войти
+        </EButton>
+        <EButton
+          disabled
+          class="login-form__button-esia"
+          color="primary"
+          variant="outlined"
+        >
+          Вход через ЕСИА
+        </EButton>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { NFormItem, NInput, NButton, NDivider } from "naive-ui";
+import { NFormItem, NInput } from "naive-ui";
 import { useField, useForm } from "vee-validate";
 import { object, string, type InferType } from "yup";
 
 import { useAuthStore } from "@/stores/auth";
+import { EButton } from "@/shared/components/inputs";
 
 interface LoginViewEmits {
   (e: "success"): void;
@@ -91,14 +93,18 @@ const onSubmit = handleSubmit(async (values) => {
 
 <style scoped>
 .login-form {
-  width: 100%;
+  padding: 40px 50px;
 }
 
 .login-form__button-submit {
-  margin-top: 10px;
+  padding: 0;
+  width: 82px;
+  border-radius: 3px;
 }
 
-.login-form__button-esia {
-  box-sizing: border-box;
+.login-form__actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
 }
 </style>

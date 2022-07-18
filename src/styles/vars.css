@@ -8,7 +8,7 @@
   --sea-color: #5d7895;
   --dark-sea-color: #395a7d;
   --black-color: #001329;
-  --gray-color: #e5e5e5;
+  --gray-color: #e0e0e0;
   --light-gray-color: #e9eff6;
   --yellow-color: #ffd405;
   --light-white-color: #f5f5f5;
@@ -30,6 +30,7 @@
   --card-shadow: 0px 4px 10px rgba(166, 181, 199, 0.4);
   --header-shadow: 0px 0px 27px #a6b5c7;
   --footer-shadow: 0px 0px 30px rgba(178, 184, 191, 0.3);
+  --tooltip-shadow: 0px 10px 19px rgba(166, 181, 199, 0.5);
 
   /* Widths */
   --sidebar-width: 260px;

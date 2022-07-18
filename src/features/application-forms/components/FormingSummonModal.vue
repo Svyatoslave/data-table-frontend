@@ -9,36 +9,28 @@
       <div class="fsm">
         <div class="fsm__subtitle"></div>
         <div class="fsm__content">
-          <table class="fsm__table">
-            <tr>
-              <td class="fsm__table-content">
-                <ETypography class="dafm__text" variant="title3">
-                  ID
-                </ETypography>
-              </td>
-              <td class="fsm__table-content">
-                <ETypography class="dafm__text" variant="title3">
-                  Вид заявки
-                </ETypography>
-              </td>
-            </tr>
-            <tr
-              v-for="{ id, typeApplicationFormText } in selected"
-              :key="id"
-              class="fsm__table-row"
-            >
-              <td class="fsm__table-content">
-                <ETypography class="dafm__text" variant="body2">
+          <ETable>
+            <template #header>
+              <ETr>
+                <ETh> ID </ETh>
+                <ETh> Вид заявки </ETh>
+              </ETr>
+            </template>
+            <template #body>
+              <ETr
+                v-for="{ id, typeApplicationFormText } in selected"
+                :key="id"
+                class="fsm__table-row"
+              >
+                <ETd>
                   {{ id }}
-                </ETypography>
-              </td>
-              <td class="fsm__table-content">
-                <ETypography class="dafm__text" variant="body2">
+                </ETd>
+                <ETd>
                   {{ typeApplicationFormText }}
-                </ETypography>
-              </td>
-            </tr>
-          </table>
+                </ETd>
+              </ETr>
+            </template>
+          </ETable>
         </div>
       </div>
       <template #actions>
@@ -92,7 +84,7 @@ import {
   formingSummon,
   type ApplicationForm,
 } from "@/features/application-forms";
-
+import { ETable, ETd, ETr, ETh } from "@/shared/components/data-display";
 export interface FormingAgendaModalProps {
   visible: boolean;
   selected: ApplicationForm[];

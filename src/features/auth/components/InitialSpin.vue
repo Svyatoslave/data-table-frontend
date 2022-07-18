@@ -1,9 +1,12 @@
 <template>
-  <div class="initial-spin"><ETPIcon :size="200" /></div>
+  <div class="initial-spin">
+    <RosnedraIcon :size="50" />
+    <RosgeolfondIcon :size="50" />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ETPIcon } from "@/shared/components/icons";
+import { RosnedraIcon, RosgeolfondIcon } from "@/shared/components/icons";
 </script>
 
 <style scoped>
@@ -11,6 +14,7 @@ import { ETPIcon } from "@/shared/components/icons";
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 20px;
   width: 100vw;
   height: 100vh;
 }

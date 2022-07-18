@@ -1,12 +1,17 @@
 <template>
   <footer class="footer">
     <SidebarFiller class="footer__sidebar-filler">
-      <div class="footer__info">
-        <MailIcon />
-        <ETypography variant="body2" class="footer__feedback">
-          Обратная связь
-        </ETypography>
-      </div>
+      <ETooltip placement="top-end">
+        <template #trigger>
+          <div class="footer__info">
+            <MailIcon />
+            <ETypography variant="body4" class="footer__feedback">
+              Обратная связь
+            </ETypography>
+          </div>
+        </template>
+        Функционал находится в разработке
+      </ETooltip>
     </SidebarFiller>
     <ContentContainer class="footer__container">
       <slot></slot>
@@ -19,6 +24,7 @@ import { ContentContainer } from "@/shared/components/layouts";
 import { ETypography } from "@/shared/components/data-display";
 import { MailIcon } from "@/shared/components/icons";
 import SidebarFiller from "./SidebarFiller.vue";
+import { ETooltip } from "@/shared/components/overlay";
 </script>
 
 <style scoped>
@@ -31,7 +37,7 @@ import SidebarFiller from "./SidebarFiller.vue";
   height: 56px;
   background: var(--footer-gradient);
   box-shadow: var(--footer-shadow);
-  z-index: 5000;
+  z-index: 500;
 }
 
 .footer__inner {

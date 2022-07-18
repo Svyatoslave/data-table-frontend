@@ -1,61 +1,70 @@
 <template>
-  <div class="pagination">
-    <PaginationButton
-      :arrow="true"
-      @click="emit('update:page', page - 1)"
-      :disabled="isFirstPage"
-    >
-      <ArrowIcon :size="24" direction="left" />
-    </PaginationButton>
-
-    <div class="pagination-content">
-      <PaginationButton v-if="!isFirstWindow" @click="emit('update:page', 1)">
-        1
-      </PaginationButton>
+  <div
+    ref="paginationRef"
+    :class="[`pagination`, { [`pagination--absolute-center`]: absoluteCenter }]"
+    :style="{ width: fixedWidth }"
+  >
+    <template v-if="!isTotalZero">
       <PaginationButton
-        v-if="!isFirstWindow"
-        @click="emit('update:page', (window - 1) * props.perPage + 1)"
+        :arrow="true"
+        @click="emit('update:page', page - 1)"
+        :disabled="isFirstPage"
       >
-        ...
+        <ArrowIcon :size="24" direction="left" />
       </PaginationButton>
+      <div class="pagination-content">
+        <PaginationButton v-if="!isFirstWindow" @click="emit('update:page', 1)">
+          1
+        </PaginationButton>
+        <PaginationButton
+          v-if="!isFirstWindow"
+          @click="emit('update:page', (window - 1) * props.perPage + 1)"
+        >
+          ...
+        </PaginationButton>
+        <PaginationButton
+          v-for="value in rangeWindow"
+          :key="value"
+          :class="{ pagination__button_active: props.page === value }"
+          @click="emit('update:page', value)"
+        >
+          {{ value }}
+        </PaginationButton>
+        <PaginationButton
+          v-if="!isLastWindow"
+          @click="emit('update:page', (window + 1) * props.perPage + 1)"
+        >
+          ...
+        </PaginationButton>
+        <PaginationButton
+          v-if="!isLastWindow"
+          @click="emit('update:page', props.total)"
+        >
+          {{ props.total }}
+        </PaginationButton>
+      </div>
       <PaginationButton
-        v-for="value in rangeWindow"
-        :key="value"
-        :class="{ pagination__button_active: props.page === value }"
-        @click="emit('update:page', value)"
+        :disabled="isLastPage"
+        @click="emit('update:page', page + 1)"
       >
-        {{ value }}
+        <ArrowIcon :size="24" direction="right" />
       </PaginationButton>
-      <PaginationButton
-        v-if="!isLastWindow"
-        @click="emit('update:page', (window + 1) * props.perPage + 1)"
-      >
-        ...
-      </PaginationButton>
-      <PaginationButton
-        v-if="!isLastWindow"
-        @click="emit('update:page', props.total)"
-      >
-        {{ props.total }}
-      </PaginationButton>
-    </div>
-    <PaginationButton
-      :disabled="isLastPage"
-      @click="emit('update:page', page + 1)"
-    >
-      <ArrowIcon :size="24" direction="right" />
-    </PaginationButton>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import { PaginationButton } from "@/shared/components/data-display";
 import { range } from "@/shared/utils/range";
 import { ArrowIcon } from "@/shared/components/icons";
+import type { Nullable, Optional } from "@/shared/types/utility";
+import { createMeasurableProp } from "@/shared/utils/styles";
+import { useElementSize } from "@vueuse/core";
 
 export interface EPaginationProps {
+  absoluteCenter?: boolean;
   total: number;
   page: number;
   pageSize: number;
@@ -69,8 +78,11 @@ interface EPaginationEmits {
 const emit = defineEmits<EPaginationEmits>();
 
 const props = withDefaults(defineProps<EPaginationProps>(), {
+  absoluteCenter: true,
   perPage: 5,
 });
+
+const isTotalZero = computed((): boolean => props.total === 0);
 
 const length = computed((): number => Math.ceil(props.total / props.pageSize));
 
@@ -108,6 +120,20 @@ const isFirstWindow = computed((): boolean => window.value === 0);
 const isLastWindow = computed(
   (): boolean => lengthWindow.value === window.value
 );
+
+const paginationRef = ref<Nullable<HTMLElement>>(null);
+const { width } = useElementSize(paginationRef);
+
+const fixedWidth = computed((): Optional<string> => {
+  switch (true) {
+    case width.value === 0:
+      return undefined;
+    case Math.ceil(width.value) % 2 !== 0:
+      return createMeasurableProp(Math.ceil(width.value + 1));
+    default:
+      return createMeasurableProp(Math.ceil(width.value));
+  }
+});
 </script>
 
 <style scoped>
@@ -120,5 +146,10 @@ const isLastWindow = computed(
 .pagination-content {
   display: flex;
   align-items: center;
+}
+.pagination--absolute-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(50%);
 }
 </style>

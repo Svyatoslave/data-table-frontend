@@ -7,11 +7,12 @@
       `button--size-${size}`,
       `button--color-${color}`,
       `button--variant-${variant}`,
+      { [`button--full-width`]: fullWidth },
       { [`button--loading`]: loading },
     ]"
   >
     <slot name="start-icon"></slot>
-    <ETypography v-if="!loading" variant="body2"><slot></slot></ETypography>
+    <ETypography v-if="!loading" variant="button2"><slot></slot></ETypography>
     <div
       v-else
       class="button__loading-overlay"
@@ -32,6 +33,8 @@ import { LoadingIcon } from "@/shared/components/icons";
 import type { Nullable, Optional } from "@/shared/types/utility";
 import { createMeasurableProp } from "@/shared/utils/styles";
 
+export type TextKind = "button1" | "button2" | "button3" | "button4";
+
 export type SizeKind = "s" | "m" | "l";
 
 export type ColorKind =
@@ -44,10 +47,12 @@ export type ColorKind =
 export type VariantKind = "text" | "outlined" | "contained";
 
 export interface ButtonProps {
+  fullWidth?: boolean;
   loading?: boolean;
   size?: SizeKind;
   color?: ColorKind;
   variant?: VariantKind;
+  text?: TextKind;
 }
 
 interface PrevSize {
@@ -58,10 +63,12 @@ interface PrevSize {
 type loadingColorKind = "blue" | "white";
 
 const props = withDefaults(defineProps<ButtonProps>(), {
+  fullWidth: false,
   loading: false,
   size: "l",
   color: "primary",
   variant: "contained",
+  text: "button2",
 });
 
 const buttonRef = ref<Nullable<HTMLElement>>(null);
@@ -169,6 +176,15 @@ const loadingColor = computed((): loadingColorKind => {
   border: 1px solid var(--disabled-color);
   cursor: not-allowed;
 }
+.button:disabled:hover {
+  border: 1px solid var(--disabled-color);
+  cursor: not-allowed;
+}
+
+.button--full-width {
+  width: 100%;
+}
+
 .button--loading {
   pointer-events: none;
 }
@@ -194,8 +210,13 @@ const loadingColor = computed((): loadingColorKind => {
 }
 
 .button--variant-text:disabled {
+  background-color: var(--white-color);
   border: 1px solid var(--grayish-blue-color);
-  color: var(--text-color);
+  color: var(--disabled-color);
+}
+.button--variant-text:disabled:hover {
+  border: 1px solid var(--grayish-blue-color);
+  cursor: not-allowed;
 }
 
 .button--variant-outlined {
@@ -209,8 +230,12 @@ const loadingColor = computed((): loadingColorKind => {
   color: var(--text-color);
 }
 .button--variant-outlined:disabled {
-  border: none;
-  color: var(--text-color);
+  background-color: var(--white-color);
+  color: var(--disabled-color);
+}
+
+.button--variant-outlined:disabled:hover {
+  cursor: not-allowed;
 }
 
 .button__loading-overlay {

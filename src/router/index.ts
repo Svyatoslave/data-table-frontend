@@ -35,6 +35,25 @@ const router = createRouter({
       component: () => import("@/features/summons/views/SummonsView.vue"),
     },
     {
+      path: "/summons/:id/application-forms",
+      name: "summonApplicationForm",
+      meta: {
+        typeOfPublicity: "private",
+        allowedRoles: ["SecretaryCommission", "MemberCommission"],
+      },
+      component: () =>
+        import("@/features/summons/views/SummonApplicationFormsView.vue"),
+    },
+    {
+      path: "/summons/:id/info",
+      name: "summonInfo",
+      meta: {
+        typeOfPublicity: "private",
+        allowedRoles: ["SecretaryCommission", "MemberCommission"],
+      },
+      component: () => import("@/features/summons/views/SummonInfoView.vue"),
+    },
+    {
       path: "/protocols",
       name: "protocols",
       meta: {
@@ -59,6 +78,8 @@ const router = createRouter({
       component: () => import("@/features/logs/views/LogsView.vue"),
     },
   ],
+  linkActiveClass: "active-link",
+  linkExactActiveClass: "exact-active-link",
 });
 
 router.beforeEach(initialGuard);

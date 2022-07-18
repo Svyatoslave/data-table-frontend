@@ -3,7 +3,23 @@
     <title>{{ createHeadTitle("Логи") }}</title>
   </Head>
   <PageLayout>
-    <ETypography variant="title1">Логи</ETypography>
+    <template #header>
+      <div class="logs-view__header">
+        <SidebarFiller />
+        <ContentContainer>
+          <TableHead :columns="columns" />
+        </ContentContainer>
+      </div>
+    </template>
+    <template #default>
+      <TableBody
+        :loading="isFetching"
+        :rows="data?.items"
+        :columns="columns"
+        :get-row-key="getRowKey"
+        :is-disabled-row="() => false"
+      />
+    </template>
   </PageLayout>
 </template>
 
@@ -11,8 +27,23 @@
 import { Head } from "@vueuse/head";
 
 import { createHeadTitle } from "@/shared/utils/meta";
-import { PageLayout } from "@/shared/components/layouts";
-import { ETypography } from "@/shared/components/data-display";
+import { TableBody, TableHead } from "@/shared/components/data-display";
+import {
+  PageLayout,
+  ContentContainer,
+  SidebarFiller,
+} from "@/shared/components/layouts";
+import { UseLogsTable } from "@/features/logs";
+
+const {
+  columns,
+  logsQuery: { data, isFetching },
+  getRowKey,
+} = UseLogsTable();
 </script>
 
-<style scoped></style>
+<style scoped>
+.logs-view__header {
+  display: flex;
+}
+</style>

@@ -1,16 +1,24 @@
 import type { SelectOptions } from "@/shared/types/select";
+import type { Nullable } from "@/shared/types/utility";
 
 export type RowData = Record<string, unknown>;
+
+// getters
+
+export type IsDisabledRowFn<T extends RowData> = (
+  row: T,
+  idx: number
+) => boolean;
 
 export type GetRowKeyFn<T extends RowData> = (
   row: T,
   idx: number
 ) => string | number;
 
-export type IsDisabledRowFn<T extends RowData> = (
+export type GetTooltipRowFn<T extends RowData> = (
   row: T,
   idx: number
-) => boolean;
+) => Nullable<string>;
 
 // sorting
 
@@ -61,42 +69,73 @@ export type ColumnFilterOptions =
   | NonColumnFilterOptions
   | AvailableColumnFilterOptions;
 
+// tooltip
+
+export interface NonColumnTooltipOptions {
+  tooltiped: false;
+}
+
+export interface AvailableColumnTooltipOptions<T extends RowData> {
+  tooltiped: true;
+  сomputed: (row: T, idx: number) => string | number;
+}
+
+export type ColumnTooltipOptions<T extends RowData> =
+  | NonColumnTooltipOptions
+  | AvailableColumnTooltipOptions<T>;
+
 // column
 
-interface BaseColumn {
+export interface TableStandardColumn<T extends RowData> {
   key: string;
-  headerName: string;
-  width?: string;
-  sortOptions: ColumnSortOptions;
-  filterOptions: ColumnFilterOptions;
-}
-
-export interface TableStandardColumn<T extends RowData> extends BaseColumn {
   type: "standard";
   field: keyof T;
+  headerName: string;
+  width: string;
+  sortOptions: ColumnSortOptions;
+  filterOptions: ColumnFilterOptions;
+  tooltipOptions: ColumnTooltipOptions<T>;
 }
 
-export interface TableDateColumn<T extends RowData> extends BaseColumn {
+export interface TableDateColumn<T extends RowData> {
+  key: string;
   type: "date";
   field: keyof T;
   format?: string;
+  headerName: string;
+  width: string;
+  sortOptions: ColumnSortOptions;
+  filterOptions: ColumnFilterOptions;
+  tooltipOptions: ColumnTooltipOptions<T>;
 }
 
-export interface TableComputedColumn<T extends RowData> extends BaseColumn {
+export interface TableComputedColumn<T extends RowData> {
+  key: string;
   type: "сomputed";
   сomputed: (row: T, idx: number) => string;
+  headerName: string;
+  width: string;
+  sortOptions: ColumnSortOptions;
+  filterOptions: ColumnFilterOptions;
+  tooltipOptions: ColumnTooltipOptions<T>;
 }
 
-export interface TableSlotColumn extends BaseColumn {
+export interface TableSlotColumn<T extends RowData> {
+  key: string;
   type: "slot";
   slotName: string;
+  headerName: string;
+  width: string;
+  sortOptions: ColumnSortOptions;
+  filterOptions: ColumnFilterOptions;
+  tooltipOptions: ColumnTooltipOptions<T>;
 }
 
 export type TableColumn<T extends RowData> =
   | TableStandardColumn<T>
   | TableDateColumn<T>
   | TableComputedColumn<T>
-  | TableSlotColumn;
+  | TableSlotColumn<T>;
 
 export type TableColumns<T extends RowData> = TableColumn<T>[];
 

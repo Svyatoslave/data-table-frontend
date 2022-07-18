@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <ETypography variant="body4" class="pagination__info_text">
+  <div v-if="!isTotalZero" class="pagination__info">
+    <ETypography variant="body10" class="pagination__info_text">
       {{ props.text }}:
     </ETypography>
-    <ETypography variant="body4" class="pagination__info_text">
+    <ETypography variant="body10" class="pagination__info_text">
       c {{ firstPage }} по {{ lastPage }} из {{ props.total }}
     </ETypography>
   </div>
@@ -23,7 +23,7 @@ export interface PaginationInfoProps {
 
 const props = defineProps<PaginationInfoProps>();
 
-// 2 30 69
+const isTotalZero = computed((): boolean => props.total === 0);
 
 const start = computed((): number => (props.page - 1) * props.pageSize);
 const end = computed((): number => props.page * props.pageSize);

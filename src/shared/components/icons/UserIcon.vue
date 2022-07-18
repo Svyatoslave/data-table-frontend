@@ -1,5 +1,10 @@
 <template>
-  <BaseIcon :width="size" :height="size">
+  <BaseIcon
+    :width="size"
+    :height="size"
+    class="user-icon"
+    :class="{ [`user-icon--active`]: active }"
+  >
     <circle cx="10" cy="10" r="8.5" stroke="#001329" />
     <circle cx="10" cy="7" r="2.5" stroke="#001329" />
     <path
@@ -13,10 +18,32 @@
 import { BaseIcon } from "@/shared/components/icons";
 
 export interface UserIconProps {
+  active?: boolean;
   size?: number;
 }
 
 withDefaults(defineProps<UserIconProps>(), {
+  active: false,
   size: 20,
 });
 </script>
+
+<style scoped>
+.user-icon {
+  outline: none;
+}
+
+.user-icon:hover {
+  cursor: pointer;
+}
+
+.user-icon--active circle,
+.user-icon:hover circle {
+  stroke: var(--green-color);
+}
+
+.user-icon--active path,
+.user-icon:hover path {
+  fill: var(--green-color);
+}
+</style>

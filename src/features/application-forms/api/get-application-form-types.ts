@@ -6,7 +6,7 @@ import {
   type ResultDto,
 } from "@/lib/api";
 import { PROTOCOLS_API_URL } from "@/shared/config";
-import type { ApplicationFormType } from "../types";
+import type { ApplicationFormType } from "../types/type";
 
 interface ApplicationFormTypeDto {
   id: number;

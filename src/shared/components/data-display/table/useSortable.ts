@@ -3,6 +3,7 @@ import { createInjectionState } from "@vueuse/core";
 
 import type { Nullable } from "@/shared/types/utility";
 import { identity } from "@/shared/utils/fp";
+import { isNonNullable } from "@/shared/utils/equal";
 
 export type SortOrder = "asc" | "decs";
 
@@ -12,16 +13,9 @@ interface Sort {
 }
 
 export interface UseSortableOtions {
-  initialSort: Sort;
+  initialSort?: Sort;
+  onChange?: (sort: Sort) => void;
 }
-
-const defaultSortableOtions: UseSortableOtions = {
-  initialSort: {
-    field: null,
-    order: null,
-  },
-};
-
 export interface UseSortableReturn {
   sort: Sort;
   isFieldSorted: (field: string) => boolean;
@@ -29,9 +23,16 @@ export interface UseSortableReturn {
 }
 
 export const useSortable = (
-  options: UseSortableOtions = defaultSortableOtions
+  options: UseSortableOtions = {}
 ): UseSortableReturn => {
-  const sort = reactive<Sort>(options.initialSort);
+  const sort = reactive<Sort>(
+    isNonNullable(options.initialSort)
+      ? options.initialSort
+      : {
+          field: null,
+          order: null,
+        }
+  );
 
   const isFieldSorted = (field: string): boolean => field === sort.field;
 
@@ -63,6 +64,10 @@ export const useSortable = (
     } else {
       sort.field = field;
       sort.order = "asc";
+    }
+
+    if (isNonNullable(options.onChange)) {
+      options.onChange(sort);
     }
   };
 

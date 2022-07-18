@@ -28,7 +28,11 @@ export type VariantKind =
   | "body8"
   | "body9"
   | "body10"
-  | "body11";
+  | "body11"
+  | "button1"
+  | "button2"
+  | "button3"
+  | "button4";
 
 export type VariantMap = Record<VariantKind, string>;
 
@@ -58,6 +62,10 @@ const props = withDefaults(defineProps<ETypographyProps>(), {
     body9: "span",
     body10: "span",
     body11: "span",
+    button1: "span",
+    button2: "span",
+    button3: "span",
+    button4: "span",
   }),
 });
 
@@ -94,6 +102,7 @@ const computedTag = computed(
   font-size: 10px;
   line-height: 12px;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .typography--variant-body1 {
@@ -161,6 +170,31 @@ const computedTag = computed(
   font-size: 10px;
   line-height: 12px;
 }
+
+.typography--variant-button1 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.typography--variant-button2 {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.typography--variant-button3 {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.typography--variant-button4 {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 22px;
+}
+
 .typography--uppercase {
   text-transform: uppercase;
 }

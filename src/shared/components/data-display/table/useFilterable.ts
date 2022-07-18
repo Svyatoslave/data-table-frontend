@@ -3,6 +3,8 @@ import { createInjectionState } from "@vueuse/core";
 
 import { identity } from "@/shared/utils/fp";
 import type { Optional } from "@/shared/types/utility";
+import { isNonNullable } from "@/shared/utils/equal";
+
 export interface PrimitiveFilter {
   type: "primitive";
   value: string;
@@ -40,6 +42,11 @@ export type Filter = PrimitiveFilter | CommonFilter | MultiSelectFilter;
 
 export type Filters = Record<string, Filter>;
 
+export interface UseFilterableOptions {
+  initialFilters?: Filters;
+  onChange?: (filters: Filters) => void;
+}
+
 export interface UseFilterableReturn {
   filters: Ref<Filters>;
   getFilter: <T extends Filter>(filterField: string) => Optional<T>;
@@ -47,18 +54,30 @@ export interface UseFilterableReturn {
   deleteFilter: (filterField: string) => void;
 }
 
-export const useFilterable = (): UseFilterableReturn => {
-  const filters = ref<Filters>({});
+export const useFilterable = (
+  options: UseFilterableOptions = {}
+): UseFilterableReturn => {
+  const filters = ref<Filters>(
+    isNonNullable(options.initialFilters) ? options.initialFilters : {}
+  );
 
   const getFilter = <T extends Filter>(filterField: string): Optional<T> =>
     filters.value[filterField] as Optional<T>;
 
   const changeFilter = (filterField: string, filter: Filter) => {
     filters.value[filterField] = filter;
+
+    if (isNonNullable(options.onChange)) {
+      options.onChange(filters.value);
+    }
   };
 
   const deleteFilter = (filterField: string) => {
     delete filters.value[filterField];
+
+    if (isNonNullable(options.onChange)) {
+      options.onChange(filters.value);
+    }
   };
 
   onUnmounted(() => {

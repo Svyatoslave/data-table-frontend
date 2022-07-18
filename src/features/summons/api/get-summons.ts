@@ -12,29 +12,17 @@ import {
 } from "@/lib/api";
 import { axios } from "@/lib/axios";
 import { PROTOCOLS_API_URL } from "@/shared/config";
-import type { Summon } from "../types";
+import {
+  mapSummonFromDto,
+  type Summon,
+  type SummonDto,
+} from "@/features/summons";
 
 interface GetSummonsPayload {
   pagination: PaginationPayload;
   sort: SortPayload;
   filters: FiltersPayload;
 }
-
-interface SummonDto {
-  id: number;
-  name: string;
-  type_summon: number;
-  create_at: Date;
-  meeting_at: Date;
-}
-
-const mapSummonFromDto = (summonDto: SummonDto): Summon => ({
-  id: summonDto.id,
-  name: summonDto.name,
-  typeSummon: summonDto.type_summon,
-  createAt: new Date(summonDto.create_at),
-  meetingAt: new Date(summonDto.meeting_at),
-});
 
 export const getSummons = (
   payload: GetSummonsPayload

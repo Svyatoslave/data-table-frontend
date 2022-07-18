@@ -11,11 +11,14 @@
         />
       </div>
 
-      <ETypography variant="body2" class="modal__subtitle">
+      <ETypography variant="body4" class="modal__subtitle">
         {{ subtitle }}
       </ETypography>
     </div>
-    <div class="modal__body">
+    <div
+      class="modal__body"
+      :class="{ [`modal__body--full-height`]: fullHeight }"
+    >
       <slot></slot>
     </div>
 
@@ -34,6 +37,7 @@ import { ETypography } from "@/shared/components/data-display";
 import { CrossIcon } from "@/shared/components/icons";
 
 export interface ModalProps {
+  fullHeight?: boolean;
   visible: boolean;
   title: string;
   subtitle?: string;
@@ -45,7 +49,9 @@ interface ModalEmits {
 
 const emit = defineEmits<ModalEmits>();
 
-defineProps<ModalProps>();
+withDefaults(defineProps<ModalProps>(), {
+  fullHeight: false,
+});
 
 const containerRef = ref(null);
 
@@ -58,6 +64,7 @@ useEventListener(document, "keydown", (event) => {
 
 <style scoped>
 .modal__container {
+  position: relative;
   width: 840px;
   margin: 0px auto;
   background-color: var(--white-color);
@@ -90,6 +97,10 @@ useEventListener(document, "keydown", (event) => {
   margin: 20px 4px;
   margin-bottom: 0;
   padding: 0 26px;
+}
+
+.modal__body--full-height {
+  height: 640px;
 }
 
 .modal__body::-webkit-scrollbar {

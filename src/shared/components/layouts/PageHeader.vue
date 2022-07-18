@@ -20,13 +20,18 @@
         <div class="header__info">
           <slot name="actions"></slot>
           <div class="header__actions">
-            <EBadge class="header__icon">
-              <template #content>6</template>
-              <template #default>
-                <BellIcon />
+            <ETooltip :z-index="900" placement="bottom">
+              <template #trigger>
+                <EBadge class="header__icon">
+                  <template #content>6</template>
+                  <template #default>
+                    <BellIcon />
+                  </template>
+                </EBadge>
               </template>
-            </EBadge>
-            <UserIcon class="header__icon" />
+              Функционал находится в разработке
+            </ETooltip>
+            <UserInfo />
           </div>
         </div>
       </div>
@@ -40,15 +45,16 @@
 import { ref, useSlots, watch } from "vue";
 import { useElementSize, useCssVar } from "@vueuse/core";
 
-import { ContentContainer } from "@/shared/components/layouts";
+import { ContentContainer, UserInfo } from "@/shared/components/layouts";
 import {
   EDivider,
   EBadge,
   ETypography,
 } from "@/shared/components/data-display";
-import { BellIcon, UserIcon } from "@/shared/components/icons";
+import { BellIcon } from "@/shared/components/icons";
 import { createMeasurableProp } from "@/shared/utils/styles";
 import { hasSlotContent } from "@/shared/utils/vue";
+import { ETooltip } from "@/shared/components/overlay";
 
 const slots = useSlots();
 
@@ -67,7 +73,7 @@ watch(height, (currentHeight) => {
   top: 0;
   box-shadow: var(--header-shadow);
   background-color: var(--white-color);
-  z-index: 2;
+  z-index: 800;
 }
 
 .header__inner {
@@ -84,19 +90,18 @@ watch(height, (currentHeight) => {
 }
 
 .header__commission-exclusion {
+  font-weight: 300;
   color: var(--blue-color);
 }
 
 .header__info {
   display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .header__actions {
   display: flex;
   gap: 35px;
-}
-
-.header__icon:hover {
-  cursor: pointer;
 }
 </style>

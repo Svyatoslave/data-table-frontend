@@ -1,5 +1,6 @@
 export * from "./api/load-user";
 export * from "./api/login";
+export * from "./api/logout";
 export * from "./api/refresh";
 
 export { default as AuthorizationGuard } from "./components/AuthorizationGuard.vue";

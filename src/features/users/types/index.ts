@@ -1,11 +1,12 @@
 export type UserRoleName = "Admin" | "MemberCommission" | "SecretaryCommission";
 
-export interface UserRole {
+export type UserRole = {
   id: string;
   name: UserRoleName;
-}
+};
 
-export interface User {
+export type User = {
+  id: string;
   login: string;
   name: string;
   surname: string;
@@ -14,4 +15,4 @@ export interface User {
   numberPhone: string;
   organizationName: string;
   role: UserRole;
-}
+};
