@@ -97,6 +97,7 @@ const directionArrow = computed((): Optional<DirectionArrow> => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0 5px;
   padding: 0 20px;
   box-sizing: border-box;
 }

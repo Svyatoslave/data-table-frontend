@@ -1,7 +1,5 @@
 <template>
-  <Head>
-    <title>{{ createHeadTitle("Вход") }}</title>
-  </Head>
+  <SEO title="Вход" />
   <div class="login-view">
     <div class="login-view__wrapper">
       <div class="login-view__form-layout">
@@ -30,12 +28,11 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { Head } from "@vueuse/head";
 import { isDefined } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { NH1, NH3 } from "naive-ui";
 
-import { createHeadTitle } from "@/shared/utils/meta";
+import { SEO } from "@/lib/meta";
 import { RosnedraIcon, RosgeolfondIcon } from "@/shared/components/icons";
 import { EDivider } from "@/shared/components/data-display";
 import {

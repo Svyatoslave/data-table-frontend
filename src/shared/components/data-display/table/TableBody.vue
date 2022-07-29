@@ -65,7 +65,10 @@ const headerFullHeightVar = useCssVar("--table-width");
 
 const isNonNullableRows = computed((): boolean => isNonNullable(props.rows));
 const customColumns = computed(
-  () => props.columns.filter(({ type }) => type === "slot") as TableSlotColumn[]
+  () =>
+    props.columns.filter(
+      ({ type }) => type === "slot"
+    ) as TableSlotColumn<DefaultRowData>[]
 );
 
 watch(width, (currentWidth) => {

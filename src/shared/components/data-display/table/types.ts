@@ -41,29 +41,36 @@ export interface NonColumnFilterOptions {
   filterable: false;
 }
 
-export interface BaseColumnFilterOptions {
+export interface PrimitiveColumnFilterOptions {
   filterable: true;
+  filterType: "primitive";
   filterField: string;
 }
 
-export interface PrimitiveColumnFilterOptions extends BaseColumnFilterOptions {
-  filterType: "primitive";
-}
-
-export interface CommonColumnFilterOptions extends BaseColumnFilterOptions {
+export interface CommonColumnFilterOptions {
+  filterable: true;
   filterType: "common";
+  filterField: string;
 }
 
-export interface MultiSelectColumnFilterOptions
-  extends BaseColumnFilterOptions {
-  filterType: "multi-select";
+export interface MultiSelectColumnFilterOptions {
+  filterable: true;
+  filterType: "multiSelect";
+  filterField: string;
   getOptions: () => Promise<SelectOptions<string | number>>;
+}
+
+export interface DateRangeColumnFilterOptions {
+  filterable: true;
+  filterType: "dateRange";
+  filterField: string;
 }
 
 export type AvailableColumnFilterOptions =
   | PrimitiveColumnFilterOptions
   | CommonColumnFilterOptions
-  | MultiSelectColumnFilterOptions;
+  | MultiSelectColumnFilterOptions
+  | DateRangeColumnFilterOptions;
 
 export type ColumnFilterOptions =
   | NonColumnFilterOptions

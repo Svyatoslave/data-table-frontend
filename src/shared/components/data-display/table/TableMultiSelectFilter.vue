@@ -50,7 +50,7 @@ const emit = defineEmits<{
 }>();
 
 const mapToSelectFilter = (values: (string | number)[]): MultiSelectFilter => ({
-  type: "multi-select",
+  type: "multiSelect",
   values: values,
 });
 

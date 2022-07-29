@@ -157,15 +157,10 @@
     </ETypography>
     <ETypography class="eti__text" variant="body4">
       {{
-        isNonNullable(
+        displayDate(
           earlyTermination.licenseAndGeologicalCharacterProtocol
             ?.dateRegStartInitialLicense
         )
-          ? dayjs(
-              earlyTermination.licenseAndGeologicalCharacterProtocol
-                .dateRegStartInitialLicense
-            ).format("DD.MM.YY HH:mm")
-          : "Нет данных"
       }}
     </ETypography>
     <ETypography class="eti__text" variant="body4">
@@ -173,14 +168,9 @@
     </ETypography>
     <ETypography class="eti__text" variant="body4">
       {{
-        isNonNullable(
+        displayDate(
           earlyTermination.licenseAndGeologicalCharacterProtocol?.dateRegStart
         )
-          ? dayjs(
-              earlyTermination.licenseAndGeologicalCharacterProtocol
-                .dateRegStart
-            ).format("DD.MM.YY HH:mm")
-          : "Нет данных"
       }}
     </ETypography>
     <ETypography class="eti__text" variant="body4">
@@ -188,13 +178,9 @@
     </ETypography>
     <ETypography class="eti__text" variant="body4">
       {{
-        isNonNullable(
+        displayDate(
           earlyTermination.licenseAndGeologicalCharacterProtocol?.dateRegEnd
         )
-          ? dayjs(
-              earlyTermination.licenseAndGeologicalCharacterProtocol.dateRegEnd
-            ).format("DD.MM.YY HH:mm")
-          : "Нет данных"
       }}
     </ETypography>
     <ETypography class="eti__text" variant="body4">
@@ -212,10 +198,8 @@
 </template>
 
 <script setup lang="ts">
-import { dayjs } from "@/lib/day-js";
 import { ETypography } from "@/shared/components/data-display";
-import { displayNullableData } from "@/shared/utils/display";
-import { isNonNullable } from "@/shared/utils/equal";
+import { displayNullableData, displayDate } from "@/shared/utils/display";
 import type { EarlyTerminationApplicationForm } from "@/features/application-forms";
 
 export interface EarlyTerminationInfoProps {

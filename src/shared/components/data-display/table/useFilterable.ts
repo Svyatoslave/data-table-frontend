@@ -1,8 +1,8 @@
-import { onUnmounted, ref, type Ref } from "vue";
+import { ref, onUnmounted, type Ref } from "vue";
 import { createInjectionState } from "@vueuse/core";
 
-import { identity } from "@/shared/utils/fp";
 import type { Optional } from "@/shared/types/utility";
+import { identity } from "@/shared/utils/fp";
 import { isNonNullable } from "@/shared/utils/equal";
 
 export interface PrimitiveFilter {
@@ -34,11 +34,21 @@ export interface CommonFilter {
 }
 
 export interface MultiSelectFilter {
-  type: "multi-select";
+  type: "multiSelect";
   values: (string | number)[];
 }
 
-export type Filter = PrimitiveFilter | CommonFilter | MultiSelectFilter;
+export interface DateRangeFilter {
+  type: "dateRange";
+  to: Date;
+  from: Date;
+}
+
+export type Filter =
+  | PrimitiveFilter
+  | CommonFilter
+  | MultiSelectFilter
+  | DateRangeFilter;
 
 export type Filters = Record<string, Filter>;
 

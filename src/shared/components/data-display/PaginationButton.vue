@@ -20,12 +20,20 @@ import { ETypography } from "@/shared/components/data-display";
   background-color: transparent;
   cursor: pointer;
   color: var(--white-color);
+  transition: all 0.125s;
 }
 
-.pagination__button_active {
+.pagination__button:hover {
+  background: rgba(0, 40, 85, 0.2);
+}
+.pagination__button--active {
   background: var(--blue-color);
   border: 1px solid var(--white-color);
 }
+.pagination__button--active:hover {
+  background: var(--blue-color);
+}
+
 .pagination__button_text {
   font-weight: 500;
 }

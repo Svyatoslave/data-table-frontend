@@ -7,3 +7,5 @@ export * from "./composables/use-users-table";
 export * from "./types";
 
 export * from "./utils/display";
+
+export * from "./views";

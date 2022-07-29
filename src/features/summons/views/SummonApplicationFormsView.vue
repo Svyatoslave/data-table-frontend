@@ -1,10 +1,8 @@
 <template>
-  <Head>
-    <title>{{ createHeadTitle("Заявки повестки") }}</title>
-  </Head>
+  <SEO title="Заявки повестки" />
   <PageLayout>
     <template #header-actions>
-      <BackLink to="/summons">Список повесток </BackLink>
+      <SummonsBackLink />
     </template>
     <template #header>
       <SummonSublinks :summon-id="summonID" />
@@ -45,9 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { Head } from "@vueuse/head";
-
-import { createHeadTitle } from "@/shared/utils/meta";
+import { SEO } from "@/lib/meta";
 import {
   TableBody,
   TableHead,
@@ -55,20 +51,20 @@ import {
   PaginationInfo,
   EDivider,
 } from "@/shared/components/data-display";
-import { BackLink } from "@/shared/components/navigation";
 import {
   PageLayout,
   ContentContainer,
   SidebarFiller,
 } from "@/shared/components/layouts";
 import { isNonNullable } from "@/shared/utils/equal";
-import { useParamId } from "@/shared/composables";
+import { useParamID } from "@/shared/composables";
 import {
+  SummonsBackLink,
   SummonSublinks,
   useSummonApplicationFormsTable,
 } from "@/features/summons";
 
-const summonID = useParamId();
+const summonID = useParamID();
 
 const {
   columns,

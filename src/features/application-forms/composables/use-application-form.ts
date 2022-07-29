@@ -1,13 +1,10 @@
-import type { Ref } from "vue";
 import { useQuery, type UseQueryReturnType } from "vue-query";
 
-import type { Nullable } from "@/shared/types/utility";
-import type { DetailApplicationForm } from "../types/mod";
+import type { DetailApplicationForm } from "../types/some";
 import { getApplicationForm } from "../api/get-application-form";
 
 export interface UseApplicationFormOptions {
-  applicationFormID: Ref<Nullable<string>>;
-  enabled: Ref<boolean>;
+  applicationFormID: string;
 }
 
 export const useApplicationForm = (
@@ -17,7 +14,6 @@ export const useApplicationForm = (
     queryKey: ["application-form", options.applicationFormID],
     queryFn: () =>
       getApplicationForm({
-        applicationFormID: options.applicationFormID.value as string,
+        applicationFormID: options.applicationFormID,
       }),
-    enabled: options.enabled,
   });

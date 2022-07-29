@@ -27,11 +27,7 @@
                   {{ column.сomputed(row, idx) }}
                 </template>
                 <template v-else-if="column.type === 'date'">
-                  {{
-                    dayjs(row[column.field] as Date).format(
-                      column.format || "DD.MM.YY HH:mm"
-                    )
-                  }}
+                  {{ displayDate(row[column.field] as Date) }}
                 </template>
                 <template v-else-if="column.type === 'slot'">
                   <slot
@@ -57,7 +53,6 @@
 </template>
 
 <script setup lang="ts">
-import { dayjs } from "@/lib/day-js";
 import {
   EDivider,
   ETypography,
@@ -68,7 +63,7 @@ import {
 } from "@/shared/components/data-display";
 import { ETooltip } from "@/shared/components/overlay";
 import type { Nullable } from "@/shared/types/utility";
-import { displayNullableData } from "@/shared/utils/display";
+import { displayNullableData, displayDate } from "@/shared/utils/display";
 import { isNonNullable } from "@/shared/utils/equal";
 
 export interface TableBodyRowProps<T extends RowData = RowData> {

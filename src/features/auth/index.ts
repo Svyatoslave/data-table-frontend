@@ -15,3 +15,5 @@ export * from "./guards";
 export * from "./utils/access";
 export * from "./utils/expired";
 export * from "./utils/router";
+
+export * from "./views";

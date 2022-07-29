@@ -2,7 +2,7 @@ import type { Nullable } from "@/shared/types/utility";
 
 export interface EarlyTerminationApplicationForm {
   id: number;
-  typeApplicationForm: string;
+  typeApplicationFormText: string;
   complainant: string;
   numberLicense: string;
   nameAreaNedr: string;

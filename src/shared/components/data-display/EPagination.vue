@@ -5,13 +5,13 @@
     :style="{ width: fixedWidth }"
   >
     <template v-if="!isTotalZero">
-      <PaginationButton
-        :arrow="true"
+      <PaginationArrow
+        :size="24"
+        direction="left"
         @click="emit('update:page', page - 1)"
         :disabled="isFirstPage"
-      >
-        <ArrowIcon :size="24" direction="left" />
-      </PaginationButton>
+      />
+
       <div class="pagination-content">
         <PaginationButton v-if="!isFirstWindow" @click="emit('update:page', 1)">
           1
@@ -25,7 +25,7 @@
         <PaginationButton
           v-for="value in rangeWindow"
           :key="value"
-          :class="{ pagination__button_active: props.page === value }"
+          :class="{ [`pagination__button--active`]: props.page === value }"
           @click="emit('update:page', value)"
         >
           {{ value }}
@@ -43,12 +43,12 @@
           {{ props.total }}
         </PaginationButton>
       </div>
-      <PaginationButton
+      <PaginationArrow
+        :size="24"
+        direction="right"
         :disabled="isLastPage"
         @click="emit('update:page', page + 1)"
-      >
-        <ArrowIcon :size="24" direction="right" />
-      </PaginationButton>
+      />
     </template>
   </div>
 </template>
@@ -56,7 +56,10 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import { PaginationButton } from "@/shared/components/data-display";
+import {
+  PaginationButton,
+  PaginationArrow,
+} from "@/shared/components/data-display";
 import { range } from "@/shared/utils/range";
 import { ArrowIcon } from "@/shared/components/icons";
 import type { Nullable, Optional } from "@/shared/types/utility";

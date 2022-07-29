@@ -20,5 +20,8 @@ dist
 # pnpm lock
 pnpm-lock.yaml
 
+# bun lock
+bun.lockb
+
 # other
 .DS_Store

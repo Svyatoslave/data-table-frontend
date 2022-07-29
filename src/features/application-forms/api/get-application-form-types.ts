@@ -6,19 +6,10 @@ import {
   type ResultDto,
 } from "@/lib/api";
 import { PROTOCOLS_API_URL } from "@/shared/config";
-import type { ApplicationFormType } from "../types/type";
-
-interface ApplicationFormTypeDto {
-  id: number;
-  name: string;
-}
-
-const mapApplicationFormTypeFromDto = (
-  applicationFormTypeDto: ApplicationFormTypeDto
-): ApplicationFormType => ({
-  id: applicationFormTypeDto.id,
-  name: applicationFormTypeDto.name,
-});
+import {
+  mapApplicationFormTypeFromDto,
+  type ApplicationFormType,
+} from "@/features/application-forms";
 
 export const getApplicationFormTypes = async (): Promise<
   PaginatedDto<ApplicationFormType>

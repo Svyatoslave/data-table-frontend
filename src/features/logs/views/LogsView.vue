@@ -1,7 +1,5 @@
 <template>
-  <Head>
-    <title>{{ createHeadTitle("Логи") }}</title>
-  </Head>
+  <SEO title="Логи" />
   <PageLayout>
     <template #header>
       <div class="logs-view__header">
@@ -24,9 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { Head } from "@vueuse/head";
-
-import { createHeadTitle } from "@/shared/utils/meta";
+import { SEO } from "@/lib/meta";
 import { TableBody, TableHead } from "@/shared/components/data-display";
 import {
   PageLayout,

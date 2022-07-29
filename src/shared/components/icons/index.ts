@@ -1,4 +1,5 @@
 export { default as BaseIcon } from "./BaseIcon.vue";
+export { default as CalendarIcon } from "./CalendarIcon.vue";
 export { default as ETPIcon } from "./ETPIcon.vue";
 export { default as RosnedraIcon } from "./RosnedraIcon.vue";
 export { default as RosgeolfondIcon } from "./RosgeolfondIcon.vue";
@@ -14,3 +15,5 @@ export { default as LinkIcon } from "./LinkIcon.vue";
 export { default as CheckIcon } from "./CheckIcon.vue";
 export { default as FilterIcon } from "./FilterIcon.vue";
 export { default as BackIcon } from "./BackIcon.vue";
+export { default as SearchIcon } from "./SearchIcon.vue";
+export { default as PasswordIcon } from "./PasswordIcon.vue";

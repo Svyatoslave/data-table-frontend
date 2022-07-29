@@ -11,7 +11,7 @@
         </ETypography>
       </div>
 
-      <ETypography variant="body4" class="modal__subtitle">
+      <ETypography variant="body5" class="modal__subtitle">
         {{ subtitle }}
       </ETypography>
     </div>
@@ -21,8 +21,9 @@
         variant="contained"
         color="error"
         @click="emit(`failure`), emit('update:visible', false)"
-        >ОК</EButton
       >
+        ОК
+      </EButton>
     </div>
   </div>
 </template>

@@ -49,6 +49,7 @@ watch(
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
+  justify-content: center;
   align-items: center;
   transition: opacity 0.3s ease;
   z-index: 1000;

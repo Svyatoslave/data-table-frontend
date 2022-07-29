@@ -1,49 +1,35 @@
 <template>
   <div style="width: 100%">
     <form class="login-form" @submit="onSubmit">
-      <NFormItem
-        :show-label="false"
-        required
-        :validation-status="errors.login ? 'error' : 'success'"
-        :feedback="errors.login"
-      >
-        <NInput
-          :input-props="{ name: 'login' }"
-          v-model:value="login"
+      <WrapperField :error="errors.login" class="login-form__field">
+        <TextInput
+          v-model="login"
+          name="login"
+          type="text"
           placeholder="Логин"
+          :error="errors.login"
         />
-      </NFormItem>
-      <NFormItem
-        :show-label="false"
-        required
-        :validation-status="errors.password ? 'error' : 'success'"
-        :feedback="errors.password"
-      >
-        <NInput
-          type="password"
-          :input-props="{ name: 'password' }"
-          show-password-on="mousedown"
-          v-model:value="password"
+      </WrapperField>
+      <WrapperField :error="errors.password" class="login-form__field">
+        <PasswordInput
+          v-model="password"
+          name="password"
           placeholder="Пароль"
+          :error="errors.password"
         />
-      </NFormItem>
+      </WrapperField>
+
       <div class="login-form__actions">
         <EButton
           type="submit"
           :loading="isSubmitting"
           :disabled="isSubmitting"
-          class="login-form__button-submit"
           color="primary"
           variant="contained"
         >
           Войти
         </EButton>
-        <EButton
-          disabled
-          class="login-form__button-esia"
-          color="primary"
-          variant="outlined"
-        >
+        <EButton disabled color="primary" variant="outlined">
           Вход через ЕСИА
         </EButton>
       </div>
@@ -52,12 +38,16 @@
 </template>
 
 <script setup lang="ts">
-import { NFormItem, NInput } from "naive-ui";
 import { useField, useForm } from "vee-validate";
 import { object, string, type InferType } from "yup";
 
 import { useAuthStore } from "@/stores/auth";
-import { EButton } from "@/shared/components/inputs";
+import {
+  EButton,
+  WrapperField,
+  TextInput,
+  PasswordInput,
+} from "@/shared/components/inputs";
 
 interface LoginViewEmits {
   (e: "success"): void;
@@ -96,14 +86,11 @@ const onSubmit = handleSubmit(async (values) => {
   padding: 40px 50px;
 }
 
-.login-form__button-submit {
-  padding: 0;
-  width: 82px;
-  border-radius: 3px;
+.login-form__field {
+  margin-bottom: 20px;
 }
-
 .login-form__actions {
-  margin-top: 6px;
+  margin-top: 30px;
   display: flex;
   gap: 8px;
 }

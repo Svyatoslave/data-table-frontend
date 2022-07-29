@@ -6,3 +6,5 @@ export * from "./composables/use-protocols";
 export * from "./composables/use-protocols-table";
 
 export * from "./types";
+
+export * from "./views";

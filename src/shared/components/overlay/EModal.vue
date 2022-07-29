@@ -1,5 +1,10 @@
 <template>
-  <div v-if="visible" ref="containerRef" class="modal__container">
+  <div
+    v-if="visible"
+    ref="containerRef"
+    class="modal"
+    :class="{ [`modal--full-height`]: fullHeight }"
+  >
     <div class="modal__head">
       <div class="modal__head-info">
         <ETypography variant="title1" class="modal__title">
@@ -10,18 +15,13 @@
           @click="emit('update:visible', false)"
         />
       </div>
-
-      <ETypography variant="body4" class="modal__subtitle">
+      <ETypography v-if="subtitle" variant="body5" class="modal__subtitle">
         {{ subtitle }}
       </ETypography>
     </div>
-    <div
-      class="modal__body"
-      :class="{ [`modal__body--full-height`]: fullHeight }"
-    >
+    <div class="modal__body">
       <slot></slot>
     </div>
-
     <div class="modal__footer">
       <slot name="actions"></slot>
     </div>
@@ -33,7 +33,6 @@ import { ref } from "vue";
 import { onClickOutside, useEventListener } from "@vueuse/core";
 
 import { ETypography } from "@/shared/components/data-display";
-
 import { CrossIcon } from "@/shared/components/icons";
 
 export interface ModalProps {
@@ -63,13 +62,20 @@ useEventListener(document, "keydown", (event) => {
 </script>
 
 <style scoped>
-.modal__container {
+.modal {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 840px;
-  margin: 0px auto;
+  max-height: calc(100vh - 60px);
+  margin: 30px auto;
   background-color: var(--white-color);
   border-radius: 4px;
   transition: all 0.3s ease;
+  overflow-y: auto;
+}
+.modal--full-height {
+  min-height: 840px;
 }
 .modal__head {
   background-color: var(--white-color);
@@ -91,16 +97,12 @@ useEventListener(document, "keydown", (event) => {
 .modal__subtitle {
   color: var(--black-color);
 }
+
 .modal__body {
-  max-height: 640px;
   overflow-y: auto;
   margin: 20px 4px;
   margin-bottom: 0;
   padding: 0 26px;
-}
-
-.modal__body--full-height {
-  height: 640px;
 }
 
 .modal__body::-webkit-scrollbar {

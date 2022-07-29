@@ -1,7 +1,5 @@
 <template>
-  <Head>
-    <title>{{ createHeadTitle("Повестки") }}</title>
-  </Head>
+  <SEO title="Повестки" />
   <PageLayout>
     <template #header>
       <div class="summons-view__header">
@@ -55,9 +53,8 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import { useQuery } from "vue-query";
-import { Head } from "@vueuse/head";
 
-import { createHeadTitle } from "@/shared/utils/meta";
+import { SEO } from "@/lib/meta";
 import {
   TableBody,
   TableHead,
@@ -116,7 +113,7 @@ const columns: TableColumns<Summon> = [
     filterOptions: {
       filterable: true,
       filterField: "typeApplicationForm",
-      filterType: "multi-select",
+      filterType: "multiSelect",
       getOptions: () =>
         getApplicationFormTypes().then((data) =>
           data.items.map(({ id, name }) => ({ value: id, label: name }))

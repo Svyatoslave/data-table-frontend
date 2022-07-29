@@ -16,7 +16,7 @@ export const getApplicationForm = async (
 ): Promise<DetailApplicationForm> =>
   axios
     .get<ResultDto<DetailApplicationFormDto>>(
-      `${PROTOCOLS_API_URL}/api/v1/application_form/early_termination/${payload.applicationFormID}`
+      `${PROTOCOLS_API_URL}/api/v1/application_form/${payload.applicationFormID}`
     )
     .then(unwrapResultDto)
     .then((data) => mapEarlyTerminationApplicationFormFromDto(data));

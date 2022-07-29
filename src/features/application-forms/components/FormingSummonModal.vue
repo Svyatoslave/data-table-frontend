@@ -18,7 +18,7 @@
             </template>
             <template #body>
               <ETr
-                v-for="{ id, typeApplicationFormText } in selected"
+                v-for="{ id, type } in selected"
                 :key="id"
                 class="fsm__table-row"
               >
@@ -26,7 +26,7 @@
                   {{ id }}
                 </ETd>
                 <ETd>
-                  {{ typeApplicationFormText }}
+                  {{ type }}
                 </ETd>
               </ETr>
             </template>
@@ -78,7 +78,6 @@ import {
   SuccessDialog,
   ErrorDialog,
 } from "@/shared/components/overlay";
-import { ETypography } from "@/shared/components/data-display";
 import { EButton } from "@/shared/components/inputs";
 import {
   formingSummon,

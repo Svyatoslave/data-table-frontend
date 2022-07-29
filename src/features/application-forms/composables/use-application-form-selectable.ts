@@ -43,8 +43,7 @@ export const useApplicationFormSelectable =
       selectedIds.value.includes(row.id);
 
     const isNonSelectedType = (row: ApplicationForm): boolean =>
-      isNonNullable(selectable.type) &&
-      selectable.type !== row.typeApplicationFormText;
+      isNonNullable(selectable.type) && selectable.type !== row.type;
 
     const changeSelectable = (row: ApplicationForm) => {
       if (isSelected(row)) {
@@ -56,7 +55,7 @@ export const useApplicationFormSelectable =
           selectable.type = null;
         }
       } else {
-        selectable.type = row.typeApplicationFormText;
+        selectable.type = row.type;
         selectable.selected.push(row);
       }
     };

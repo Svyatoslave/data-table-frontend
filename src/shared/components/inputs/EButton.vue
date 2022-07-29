@@ -12,7 +12,9 @@
     ]"
   >
     <slot name="start-icon"></slot>
-    <ETypography v-if="!loading" variant="button2"><slot></slot></ETypography>
+    <ETypography v-if="!loading" :variant="typographyVariant">
+      <slot></slot>
+    </ETypography>
     <div
       v-else
       class="button__loading-overlay"
@@ -33,8 +35,6 @@ import { LoadingIcon } from "@/shared/components/icons";
 import type { Nullable, Optional } from "@/shared/types/utility";
 import { createMeasurableProp } from "@/shared/utils/styles";
 
-export type TextKind = "button1" | "button2" | "button3" | "button4";
-
 export type SizeKind = "s" | "m" | "l";
 
 export type ColorKind =
@@ -52,7 +52,6 @@ export interface ButtonProps {
   size?: SizeKind;
   color?: ColorKind;
   variant?: VariantKind;
-  text?: TextKind;
 }
 
 interface PrevSize {
@@ -79,10 +78,18 @@ const prevSize = reactive<PrevSize>({
   height: undefined,
 });
 
-watch([width, height, () => props.loading], ([width, height]) => {
-  if (!props.loading) {
-    prevSize.width = createMeasurableProp(width);
-    prevSize.height = createMeasurableProp(height);
+type TypographyVariant = "button2" | "button3" | "button4";
+
+const typographyVariant = computed((): TypographyVariant => {
+  switch (props.size) {
+    case "l":
+      return "button2";
+    case "m":
+      return "button3";
+    case "s":
+      return "button4";
+    default:
+      throw new Error("size don't match");
   }
 });
 
@@ -102,6 +109,13 @@ const loadingColor = computed((): loadingColorKind => {
       return "blue";
   }
   return "white";
+});
+
+watch([width, height, () => props.loading], ([width, height]) => {
+  if (!props.loading) {
+    prevSize.width = createMeasurableProp(width);
+    prevSize.height = createMeasurableProp(height);
+  }
 });
 </script>
 
@@ -167,15 +181,18 @@ const loadingColor = computed((): loadingColorKind => {
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .button:hover {
   background-color: var(--hover-color);
   border: 1px solid var(--hover-color);
 }
+
 .button:disabled {
   background-color: var(--disabled-color);
   border: 1px solid var(--disabled-color);
   cursor: not-allowed;
 }
+
 .button:disabled:hover {
   border: 1px solid var(--disabled-color);
   cursor: not-allowed;
@@ -188,15 +205,17 @@ const loadingColor = computed((): loadingColorKind => {
 .button--loading {
   pointer-events: none;
 }
+
 .button--size-s {
-  padding: 4px 12px;
+  padding: 3px 12px;
 }
 
 .button--size-m {
-  padding: 5px 16px;
+  padding: 4px 16px;
 }
+
 .button--size-l {
-  padding: 9px 20px;
+  padding: 8px 20px;
 }
 
 .button--variant-text {

@@ -10,11 +10,12 @@ import router from "@/router";
 import { queryPluginOptions } from "@/lib/vue-query";
 import App from "@/App.vue";
 
-const app = createApp(App);
+const main = () =>
+  createApp(App)
+    .use(createPinia())
+    .use(createHead())
+    .use(router)
+    .use(VueQueryPlugin, queryPluginOptions)
+    .mount("#app");
 
-app.use(createPinia());
-app.use(createHead());
-app.use(router);
-app.use(VueQueryPlugin, queryPluginOptions);
-
-app.mount("#app");
+main();

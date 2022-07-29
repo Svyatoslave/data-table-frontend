@@ -1,6 +1,6 @@
 <template>
   <td class="content">
-    <ETypography variant="body4">
+    <ETypography variant="body5">
       <slot></slot>
     </ETypography>
   </td>

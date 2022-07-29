@@ -1,10 +1,8 @@
 <template>
-  <Head>
-    <title>{{ createHeadTitle("Информация о повестке") }}</title>
-  </Head>
+  <SEO title="Информация о повестке" />
   <PageLayout>
     <template #header-actions>
-      <BackLink to="/summons">Список повесток </BackLink>
+      <SummonsBackLink />
     </template>
     <template #header><SummonSublinks :summon-id="summonID" /></template>
     <template #default>
@@ -38,19 +36,20 @@
             <ETypography variant="title2" class="siv__subtitle">
               Дата, время формирования
             </ETypography>
-            <NDatePicker
-              disabled
-              type="datetime"
-              format="dd.MM.yy HH:mm"
-              :value="Date.parse(data.meetingAt.toString())"
-              class="siv__date"
+            <DatePicker
+              ref="meetingAtDatePickerRef"
+              name="meeting-at"
+              placeholder="Дата заседания"
+              :value="oldMeetingAt"
+              input-class="siv__date"
+              @update:value="updateMeetingAt"
             />
-            <NDatePicker
+            <DatePicker
               disabled
-              type="datetime"
-              format="dd.MM.yy HH:mm"
-              :value="Date.parse(data.createdAt.toString())"
-              class="siv__date"
+              name="create-at"
+              placeholder="Дата формирования"
+              :value="data.createdAt"
+              input-class="siv__date"
             />
           </div>
           <ETypography variant="title2" class="siv__subtitle">
@@ -181,34 +180,85 @@
       </PagePaper>
     </template>
   </PageLayout>
+  <UpdateSummonMeetingAtModal
+    :visible="visibleModal"
+    :summon-id="summonID"
+    :old-meeting-at="oldMeetingAt"
+    :new-meeting-at="newMeetingAt"
+    @update:visible="handleUpdateVisible"
+    @success="handleSuccess"
+    @cancel="handleCancel"
+  />
 </template>
 
 <script setup lang="ts">
-import { Head } from "@vueuse/head";
-import { NDatePicker } from "naive-ui";
+import { computed, ref } from "vue";
 
-import { createHeadTitle } from "@/shared/utils/meta";
-import { useParamId } from "@/shared/composables";
+import { SEO } from "@/lib/meta";
+import { useParamID } from "@/shared/composables";
 import { LoadingOverlay } from "@/shared/components/overlay";
 import { PageLayout, PagePaper } from "@/shared/components/layouts";
 import { ETypography } from "@/shared/components/data-display";
 import { isNonNullable } from "@/shared/utils/equal";
-import { SummonSublinks, useSummon } from "@/features/summons";
-import { InlineLink, FileLink, BackLink } from "@/shared/components/navigation";
+import {
+  SummonsBackLink,
+  SummonSublinks,
+  UpdateSummonMeetingAtModal,
+  useSummon,
+  useUpdateSummonMeetingAtModal,
+} from "@/features/summons";
+import { InlineLink, FileLink } from "@/shared/components/navigation";
+import type { Nullable } from "@/shared/types/utility";
+import { DatePicker } from "@/shared/components/inputs";
 
-const summonID = useParamId();
+const summonID = useParamID();
 
-const { data, isFetching } = useSummon({ summonID: summonID });
+const {
+  meetingAt: newMeetingAt,
+  visibleModal,
+  updateMeetingAt,
+} = useUpdateSummonMeetingAtModal();
+
+const { data, isFetching, refetch } = useSummon({
+  summonID: summonID,
+  onSuccess: (data) => {
+    newMeetingAt.value = data.meetingAt;
+  },
+});
+
+const meetingAtDatePickerRef =
+  ref<Nullable<InstanceType<typeof DatePicker>>>(null);
+
+const oldMeetingAt = computed(
+  (): Nullable<Date> =>
+    isNonNullable(data.value) ? data.value.meetingAt : null
+);
+
+const handleSuccess = () => {
+  refetch.value();
+};
+
+const handleCancel = () => {
+  newMeetingAt.value = oldMeetingAt.value;
+  meetingAtDatePickerRef.value?.reset();
+};
+
+const handleUpdateVisible = (value: boolean) => {
+  newMeetingAt.value = oldMeetingAt.value;
+  visibleModal.value = value;
+};
 </script>
+
 <style scoped>
 .siv {
   display: grid;
   grid-row-gap: 20px;
 }
+
 .siv__content {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  grid-row-gap: 10px;
+  grid-gap: 10px 20px;
 }
 
 .siv__tilte {
@@ -219,11 +269,14 @@ const { data, isFetching } = useSummon({ summonID: summonID });
   color: var(--black-color);
   margin-top: 20px;
 }
+
 .siv__text {
   color: var(--blue-color);
 }
+</style>
+
+<style>
 .siv__date {
-  width: 310px;
-  height: 36px;
+  max-width: 310px;
 }
 </style>

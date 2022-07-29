@@ -4,12 +4,27 @@
     :show-arrow="false"
     trigger="manual"
     placement="bottom-start"
-    style="width: 260px"
+    :style="{
+      width: filterOptions.filterType !== `dateRange` && '260px',
+      padding: filterOptions.filterType === `dateRange` && 0,
+    }"
     @clickoutside="handleClickOutiside"
     @update:show="changeShowFilter(true)"
   >
     <template #trigger>
-      <FilterIcon ref="iconRef" :active="active" @click="handleClickIcon" />
+      <FilterIcon
+        v-if="filterOptions.filterType !== `dateRange`"
+        ref="iconRef"
+        :active="active"
+        @click="handleClickIcon"
+      />
+      <CalendarIcon
+        v-else
+        ref="iconRef"
+        hoverable
+        :active="active"
+        @click="handleClickIcon"
+      />
     </template>
     <TablePrimitiveFilter
       v-if="filterOptions.filterType === `primitive`"
@@ -17,12 +32,17 @@
       @close="changeShowFilter(false)"
     />
     <TableCommonFilter
-      v-if="filterOptions.filterType === `common`"
+      v-else-if="filterOptions.filterType === `common`"
       :filter-options="filterOptions"
       @close="changeShowFilter(false)"
     />
     <TableMultiSelectFilter
-      v-if="filterOptions.filterType === `multi-select`"
+      v-else-if="filterOptions.filterType === `multiSelect`"
+      :filter-options="filterOptions"
+      @close="changeShowFilter(false)"
+    />
+    <TableDateRangeFilter
+      v-else-if="filterOptions.filterType === `dateRange`"
       :filter-options="filterOptions"
       @close="changeShowFilter(false)"
     />
@@ -33,11 +53,12 @@
 import { computed, ref } from "vue";
 import { NPopover } from "naive-ui";
 
-import { FilterIcon } from "@/shared/components/icons";
+import { FilterIcon, CalendarIcon } from "@/shared/components/icons";
 import {
   TableCommonFilter,
   TableMultiSelectFilter,
   TablePrimitiveFilter,
+  TableDateRangeFilter,
   useFilterableCtx,
   type AvailableColumnFilterOptions,
 } from "@/shared/components/data-display";
@@ -51,9 +72,10 @@ export interface TableFilterProps {
 
 const props = defineProps<TableFilterProps>();
 
-const showFilter = ref<boolean>(false);
-
 const filterable = useFilterableCtx();
+
+const showFilter = ref<boolean>(false);
+const iconRef = ref<Nullable<HTMLElement>>(null);
 
 const active = computed(
   (): boolean =>
@@ -64,8 +86,6 @@ const active = computed(
 const changeShowFilter = (value: boolean) => {
   showFilter.value = value;
 };
-
-const iconRef = ref<Nullable<HTMLElement>>(null);
 
 const handleClickOutiside = (event: MouseEvent) => {
   const el = unrefElement(iconRef);
@@ -80,5 +100,3 @@ const handleClickIcon = () => {
   showFilter.value = !showFilter.value;
 };
 </script>
-
-<style scoped></style>

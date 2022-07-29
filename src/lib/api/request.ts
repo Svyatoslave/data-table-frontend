@@ -84,14 +84,21 @@ interface CommonFilterPayload {
 }
 
 export interface MultiSelectFilterPayload {
-  type: "multi-select";
+  type: "multiSelect";
   values: (string | number)[];
+}
+
+export interface DateRangeFilterPayload {
+  type: "dateRange";
+  to: Date;
+  from: Date;
 }
 
 export type FilterPayload =
   | PrimitiveFilterPayload
   | CommonFilterPayload
-  | MultiSelectFilterPayload;
+  | MultiSelectFilterPayload
+  | DateRangeFilterPayload;
 
 export type FiltersPayload = Record<string, FilterPayload>;
 
@@ -170,6 +177,14 @@ const mapMultiSelectFilterToDto = (
   [pascalCase(filterField)]: filter.values.join(","),
 });
 
+const mapDateRangeFilterToDto = (
+  filterField: string,
+  filter: DateRangeFilterPayload
+): FiltersDto => ({
+  [`From${pascalCase(filterField)}`]: mapDateToDto(filter.from),
+  [`To${pascalCase(filterField)}`]: mapDateToDto(filter.to),
+});
+
 export const mapFiltersToDto = (filters: FiltersPayload): FiltersDto =>
   Object.entries(filters).reduce((acc, [filterField, filter]) => {
     switch (filter.type) {
@@ -177,9 +192,15 @@ export const mapFiltersToDto = (filters: FiltersPayload): FiltersDto =>
         return { ...acc, ...mapPrimitiveFilterToDto(filterField, filter) };
       case "common":
         return { ...acc, ...mapCommonFilterToDto(filterField, filter) };
-      case "multi-select":
+      case "multiSelect":
         return { ...acc, ...mapMultiSelectFilterToDto(filterField, filter) };
+      case "dateRange":
+        return { ...acc, ...mapDateRangeFilterToDto(filterField, filter) };
       default:
         return acc;
     }
   }, {});
+
+// other
+
+export const mapDateToDto = (date: Date) => date.toISOString();

@@ -6,8 +6,9 @@
       `typography--variant-${variant}`,
       { [`typography--uppercase`]: uppercase },
     ]"
-    ><slot></slot
-  ></component>
+  >
+    <slot></slot>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -74,7 +75,7 @@ const computedTag = computed(
 );
 </script>
 
-<style>
+<style scoped>
 .typography {
   margin: 0;
 }
@@ -192,7 +193,7 @@ const computedTag = computed(
 .typography--variant-button4 {
   font-weight: 700;
   font-size: 12px;
-  line-height: 22px;
+  line-height: 20px;
 }
 
 .typography--uppercase {

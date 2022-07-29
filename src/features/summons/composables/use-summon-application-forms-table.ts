@@ -1,7 +1,8 @@
 import type { UseQueryReturnType } from "vue-query";
 
-import { dayjs } from "@/lib/day-js";
 import type { PaginatedDto } from "@/lib/api";
+import { usePagination, type UsePaginationReturn } from "@/shared/composables";
+import { displayNullableData } from "@/shared/utils/display";
 import {
   useFilterable,
   useProvideFilterable,
@@ -14,8 +15,8 @@ import {
   getApplicationFormTypes,
   type ApplicationForm,
 } from "@/features/application-forms";
-import { useSummonApplicationForms } from "./use-summon-application-forms";
-import { usePagination, type UsePaginationReturn } from "@/shared/composables";
+import { useSummonApplicationForms } from "@/features/summons";
+import { displayDate } from "@/shared/utils/display";
 
 const columns: TableColumns<ApplicationForm> = [
   {
@@ -40,19 +41,22 @@ const columns: TableColumns<ApplicationForm> = [
   },
   {
     key: "license",
-    type: "сomputed",
-    сomputed: () => "Нет данных",
+    type: "standard",
+    field: "numberLicense",
     headerName: "Номер лицензии",
     width: "147px",
     sortOptions: {
-      sortable: false,
+      sortable: true,
+      sortField: "4",
     },
     filterOptions: {
-      filterable: false,
+      filterable: true,
+      filterField: "searchNumberLicense",
+      filterType: "common",
     },
     tooltipOptions: {
       tooltiped: true,
-      сomputed: () => "Нет данных",
+      сomputed: (row) => displayNullableData(row.numberLicense),
     },
   },
   {
@@ -60,7 +64,7 @@ const columns: TableColumns<ApplicationForm> = [
     type: "standard",
     field: "typeApplicationFormText",
     headerName: "Вид заявки",
-    width: "525px",
+    width: "450px",
     sortOptions: {
       sortable: true,
       sortField: "2",
@@ -68,7 +72,7 @@ const columns: TableColumns<ApplicationForm> = [
     filterOptions: {
       filterable: true,
       filterField: "typeApplicationForm",
-      filterType: "multi-select",
+      filterType: "multiSelect",
       getOptions: () =>
         getApplicationFormTypes().then((data) =>
           data.items.map(({ id, name }) => ({ value: id, label: name }))
@@ -78,39 +82,44 @@ const columns: TableColumns<ApplicationForm> = [
       tooltiped: false,
     },
   },
-
   {
     key: "name",
-    type: "сomputed",
-    сomputed: () => "Нет данных",
+    type: "standard",
+    field: "nameAreaNedr",
     headerName: "Наименование участка недр",
-    width: "147px",
+    width: "222px",
     sortOptions: {
-      sortable: false,
+      sortable: true,
+      sortField: "5",
     },
     filterOptions: {
-      filterable: false,
+      filterable: true,
+      filterField: "searchNameAreaNedr",
+      filterType: "common",
     },
     tooltipOptions: {
       tooltiped: true,
-      сomputed: () => "Нет данных",
+      сomputed: (row) => displayNullableData(row.nameAreaNedr),
     },
   },
   {
     key: "subject",
-    type: "сomputed",
-    сomputed: () => "Нет данных",
+    type: "standard",
+    field: "subjectRF",
     headerName: "Субьъект РФ",
     width: "147px",
     sortOptions: {
-      sortable: false,
+      sortable: true,
+      sortField: "6",
     },
     filterOptions: {
-      filterable: false,
+      filterable: true,
+      filterField: "searchSubjectRf",
+      filterType: "common",
     },
     tooltipOptions: {
       tooltiped: true,
-      сomputed: () => "Нет данных",
+      сomputed: (row) => displayNullableData(row.subjectRF),
     },
   },
   {
@@ -140,15 +149,14 @@ const columns: TableColumns<ApplicationForm> = [
     headerName: "Дата и время",
     width: "170px",
     sortOptions: {
-      sortable: true,
-      sortField: "4",
+      sortable: false,
     },
     filterOptions: {
       filterable: false,
     },
     tooltipOptions: {
       tooltiped: true,
-      сomputed: (row) => dayjs(row.createdAt).format("DD.MM.YY HH:mm"),
+      сomputed: (row) => displayDate(row.createdAt),
     },
   },
 ];
