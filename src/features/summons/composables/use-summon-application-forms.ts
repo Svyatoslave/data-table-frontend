@@ -1,19 +1,15 @@
+import type { Ref } from "vue";
 import { useQuery, type UseQueryReturnType } from "vue-query";
 
-import type {
-  FiltersPayload,
-  PaginatedDto,
-  PaginationPayload,
-  SortPayload,
-} from "@/lib/api";
+import type { FiltersPayload, PaginatedDto, SortPayload } from "@/lib/api";
 import type { ApplicationForm } from "@/features/application-forms";
 import { getSummonApplicationForms } from "@/features/summons";
 
 export interface UseSummonApplicationFormsOptions {
   summonID: string;
-  pagination: PaginationPayload;
+  page: Ref<number>;
+  filters: Ref<FiltersPayload>;
   sort: SortPayload;
-  filters: FiltersPayload;
   onSuccess?: (data: PaginatedDto<ApplicationForm>) => void;
 }
 
@@ -26,7 +22,7 @@ export const useSummonApplicationForms = (
       "summon-application-forms",
       {
         summonID: options.summonID,
-        page: options.pagination.page,
+        page: options.page,
         sort: options.sort,
         filters: options.filters,
       },
@@ -34,9 +30,9 @@ export const useSummonApplicationForms = (
     queryFn: () =>
       getSummonApplicationForms({
         summonID: options.summonID,
-        pagination: options.pagination,
+        pagination: { page: options.page.value },
         sort: options.sort,
-        filters: options.filters,
+        filters: options.filters.value,
       }),
     onSuccess: options.onSuccess,
   });

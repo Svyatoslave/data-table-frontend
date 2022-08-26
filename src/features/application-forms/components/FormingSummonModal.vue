@@ -1,111 +1,102 @@
 <template>
-  <ModalOverlay :visible="visible">
-    <EModal
-      :visible="isCurrent(`confirmation`)"
-      title="Подтверждение"
-      subtitle="Подтвердите создание повестки/проекта из следующих заявок:"
-      @update:visible="(value) => emit('update:visible', value)"
-    >
-      <div class="fsm">
-        <div class="fsm__subtitle"></div>
-        <div class="fsm__content">
-          <ETable>
-            <template #header>
-              <ETr>
-                <ETh> ID </ETh>
-                <ETh> Вид заявки </ETh>
-              </ETr>
-            </template>
-            <template #body>
-              <ETr
-                v-for="{ id, type } in selected"
-                :key="id"
-                class="fsm__table-row"
-              >
-                <ETd>
-                  {{ id }}
-                </ETd>
-                <ETd>
-                  {{ type }}
-                </ETd>
-              </ETr>
-            </template>
-          </ETable>
-        </div>
-      </div>
-      <template #actions>
-        <EButton
-          :loading="isLoading"
-          variant="contained"
-          color="primary"
-          @click="handleConfirmation"
-        >
-          Подтвердить
-        </EButton>
-        <EButton
-          variant="outlined"
-          color="primary"
-          @click="emit('update:visible', false)"
-          >Отменить
-        </EButton>
-      </template>
-    </EModal>
-    <SuccessDialog
-      :visible="isCurrent(`success`)"
-      title="Повестка успешно создана"
-      subtitle="Подробная информация будет доступна в разделе «Повестки»"
-      @update:visible="(value) => emit('update:visible', value)"
-      @success="handleSuccess"
+  <VModalOverlay :visible="visible">
+    <ConfirmApplicationFormsStep
+      v-if="isCurrent('confirm-forming-agenda')"
+      :selected="selected"
+      @next="goToNext"
+      @cancel="handleCLose"
     />
-    <ErrorDialog
-      :visible="isCurrent(`error`)"
-      title="Ошибка сервера"
-      subtitle="Повестка не создана. Проверьте подключение к интернету"
-      @update:visible="(value) => emit('update:visible', value)"
-      @failure="handleError"
+    <SelectCommissionMembersStep
+      v-if="isCurrent('forming-commission-members')"
+      :selected="selectedCommissionMembers"
+      @next="goToNext"
+      @close="handleCLose"
+      @cancel="handleCancel"
+      @change-selected="changeSelected"
+      @delete-selected="deleteSelected"
     />
-  </ModalOverlay>
+    <ConfirmCommissionMembersStep
+      v-if="isCurrent('confirm-commission-members')"
+      :loading="isLoading"
+      :selected="selectedCommissionMembers"
+      @next="handleConfirmation"
+      @close="handleCLose"
+      @cancel="handleCancel"
+    />
+  </VModalOverlay>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useMutation } from "vue-query";
+import { useRouter } from "vue-router";
 import { useStepper } from "@vueuse/core";
+import { useMutation } from "vue-query";
 
+import { useToast } from "@/lib/toast";
+import { VModalOverlay } from "@/shared/components/overlay";
 import {
-  EModal,
-  ModalOverlay,
-  SuccessDialog,
-  ErrorDialog,
-} from "@/shared/components/overlay";
-import { EButton } from "@/shared/components/inputs";
-import {
-  formingSummon,
   type ApplicationForm,
+  ConfirmApplicationFormsStep,
+  SelectCommissionMembersStep,
+  ConfirmCommissionMembersStep,
+  formingSummon,
 } from "@/features/application-forms";
-import { ETable, ETd, ETr, ETh } from "@/shared/components/data-display";
+import { useCommissionMembersSelectable } from "@/features/commission-members";
+
 export interface FormingAgendaModalProps {
   visible: boolean;
   selected: ApplicationForm[];
 }
 
 export interface FormingAgendaModalEmits {
-  (e: "update:visible", value: boolean): void;
+  (e: "close"): void;
   (e: "success"): void;
+  (e: "failure"): void;
 }
 
 const props = defineProps<FormingAgendaModalProps>();
 
 const emit = defineEmits<FormingAgendaModalEmits>();
 
-const { goTo, isCurrent } = useStepper(["confirmation", "success", "error"]);
+const { goToNext, goToPrevious, isCurrent, goTo } = useStepper([
+  "confirm-forming-agenda",
+  "forming-commission-members",
+  "confirm-commission-members",
+]);
+
+const router = useRouter();
+const toast = useToast();
+
+const {
+  selected: selectedCommissionMembers,
+  selectedIds: selectedCommissionMembersIds,
+  changeSelected,
+  deleteSelected,
+  clearSelected,
+} = useCommissionMembersSelectable();
 
 const { mutate, isLoading } = useMutation(formingSummon, {
-  onSuccess: () => {
-    goTo("success");
+  onSuccess: (summonID) => {
+    clearSelected();
+    goTo("confirm-forming-agenda");
+
+    emit("close");
+    emit("success");
+    toast({
+      kind: "success",
+      title: "Повестка успешно создана",
+      onClick: () => {
+        router.push(`/summons/${summonID}/application-forms`);
+      },
+    });
   },
   onError: () => {
-    goTo("error");
+    clearSelected();
+    goTo("confirm-forming-agenda");
+
+    emit("close");
+    emit("failure");
+    toast({ kind: "warning", title: "Ошибка сервера" });
   },
 });
 
@@ -114,30 +105,20 @@ const selectedIds = computed((): number[] =>
 );
 
 const handleConfirmation = () => {
-  mutate({ applicationFormIds: selectedIds.value });
+  mutate({
+    commissionMembersIds: selectedCommissionMembersIds.value,
+    applicationFormIds: selectedIds.value,
+  });
 };
 
-const handleSuccess = () => {
-  goTo("confirmation");
-  emit("success");
+const handleCLose = () => {
+  emit("close");
+  goTo("confirm-forming-agenda");
 };
 
-const handleError = () => {
-  goTo("confirmation");
+const handleCancel = () => {
+  goToPrevious();
 };
 </script>
 
-<style scoped>
-.fsm__content {
-  border: 1px solid #d2d2e2;
-  border-radius: 4px;
-}
-.fsm__table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.fsm__table-content {
-  padding: 10px;
-  border: 1px solid #d2d2e2;
-}
-</style>
+<style scoped></style>

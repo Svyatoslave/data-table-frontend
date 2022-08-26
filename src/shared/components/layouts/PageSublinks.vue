@@ -1,46 +1,50 @@
 <template>
-  <div class="sublinks">
+  <div class="sub-links">
     <RouterLink
-      v-for="{ key, disabled, to, name } in sublinks"
+      v-for="{ key, disabled, to, name } in subLinks"
       custom
       :key="key"
       :to="to"
-      v-slot="{ href, navigate, isActive }"
+      v-slot="{ href, navigate }"
     >
-      <InlineLink
-        :active="isActive"
+      <VInlineLink
+        :active="isActive(to)"
         :disabled="disabled"
         color="secondary"
         :reference="href"
         @click="navigate"
       >
         {{ name }}
-      </InlineLink>
+      </VInlineLink>
     </RouterLink>
   </div>
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 
-import { InlineLink } from "@/shared/components/navigation";
+import { VInlineLink } from "@/shared/components/navigation";
 
-export interface Sublink {
+export interface SubLink {
   key: string;
   disabled: boolean;
   to: string;
   name: string;
 }
 
-export interface PageSubliksProps {
-  sublinks: Sublink[];
+export interface PageSubLinksProps {
+  subLinks: SubLink[];
 }
 
-defineProps<PageSubliksProps>();
+defineProps<PageSubLinksProps>();
+
+const route = useRoute();
+
+const isActive = (to: string): boolean => route.path.startsWith(to);
 </script>
 
 <style scoped>
-.sublinks {
+.sub-links {
   display: flex;
   justify-content: center;
   align-items: center;

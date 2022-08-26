@@ -2,13 +2,13 @@
   <nav class="sidebar">
     <AuthorizationGuard :allowed-roles="['SecretaryCommission']">
       <PageSidebarLink to="/application-forms">Заявки</PageSidebarLink>
-      <EDivider />
+      <VDivider />
     </AuthorizationGuard>
     <AuthorizationGuard
       :allowed-roles="['SecretaryCommission', 'MemberCommission']"
     >
       <PageSidebarLink to="/summons">Повестки</PageSidebarLink>
-      <EDivider />
+      <VDivider />
     </AuthorizationGuard>
     <AuthorizationGuard
       :allowed-roles="['SecretaryCommission', 'MemberCommission']"
@@ -17,7 +17,7 @@
     </AuthorizationGuard>
     <AuthorizationGuard :allowed-roles="['Admin']">
       <PageSidebarLink to="/users">Пользователи</PageSidebarLink>
-      <EDivider />
+      <VDivider />
     </AuthorizationGuard>
     <AuthorizationGuard :allowed-roles="['Admin']">
       <PageSidebarLink to="/logs">Логи</PageSidebarLink>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { EDivider } from "@/shared/components/data-display";
+import { VDivider } from "@/shared/components/data-display";
 import { PageSidebarLink } from "@/shared/components/layouts";
 import { AuthorizationGuard } from "@/features/auth";
 </script>

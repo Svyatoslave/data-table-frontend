@@ -1,19 +1,19 @@
 <template>
-  <PageSublinks :sublinks="sublinks" />
+  <PageSubLinks :sub-links="subLinks" />
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { PageSublinks, type Sublink } from "@/shared/components/layouts";
+import { PageSubLinks, type SubLink } from "@/shared/components/layouts";
 
-export interface ApplicationFormSublinksProps {
+export interface ApplicationFormSubLinksProps {
   applicationFormId: string;
 }
 
-const props = defineProps<ApplicationFormSublinksProps>();
+const props = defineProps<ApplicationFormSubLinksProps>();
 
-const sublinks = computed<Sublink[]>(() => [
+const subLinks = computed<SubLink[]>(() => [
   {
     key: "applicationFormInfo",
     disabled: false,

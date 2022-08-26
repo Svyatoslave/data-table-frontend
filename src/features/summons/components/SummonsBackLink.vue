@@ -1,7 +1,7 @@
 <template>
-  <BackLink to="/summons">Список повесток </BackLink>
+  <VBackLink to="/summons">Список повесток </VBackLink>
 </template>
 
 <script setup lang="ts">
-import { BackLink } from "@/shared/components/navigation";
+import { VBackLink } from "@/shared/components/navigation";
 </script>

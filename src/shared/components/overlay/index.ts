@@ -1,6 +1,5 @@
-export { default as LoadingOverlay } from "./LoadingOverlay.vue";
-export { default as EModal } from "./EModal.vue";
-export { default as ModalOverlay } from "./ModalOverlay.vue";
-export { default as SuccessDialog } from "./SuccessDialog.vue";
-export { default as ErrorDialog } from "./ErrorDialog.vue";
-export { default as ETooltip } from "./ETooltip.vue";
+export { default as VDrawer } from "./VDrawer.vue";
+export { default as VLoadingOverlay } from "./VLoadingOverlay.vue";
+export { default as VModal } from "./VModal.vue";
+export { default as VModalOverlay } from "./VModalOverlay.vue";
+export { default as VTooltip } from "./VTooltip.vue";

@@ -3,14 +3,14 @@
   <PageLayout>
     <template #header>
       <div class="aftv__header">
-        <SidebarFiller />
+        <PageSidebarFiller />
         <ContentContainer>
-          <TableHead :columns="columns" />
+          <DataTableHead :columns="columns" />
         </ContentContainer>
       </div>
     </template>
     <template #default>
-      <TableBody
+      <DataTableBody
         :loading="isFetching"
         :rows="data?.items"
         :columns="columns"
@@ -20,7 +20,7 @@
       >
         <template #selection="{ disabled, row }: TableRowCtx<ApplicationForm>">
           <div class="aftv__row-selection">
-            <ECheckbox
+            <VCheckbox
               :disabled="disabled || isNonApplicationFormAccepted(row)"
               :checked="isSelected(row)"
               class="aftv__checkbox"
@@ -40,25 +40,25 @@
             </RouterLink>
           </div>
         </template>
-      </TableBody>
+      </DataTableBody>
     </template>
     <template #footer>
-      <EButton
+      <VButton
         :disabled="nonSelected"
         variant="contained"
         color="secondary"
         @click="changeVisibleModal(true)"
       >
         Сформировать проект протокола
-      </EButton>
+      </VButton>
       <template v-if="isNonNullable(total)">
-        <EPagination
+        <VPagination
           v-model:page="page"
           :total="total"
           :page-size="pageSize"
           :per-page="5"
         />
-        <PaginationInfo
+        <VPaginationInfo
           text="Показаны заявки"
           :page="page"
           :page-size="pageSize"
@@ -68,226 +68,41 @@
     </template>
   </PageLayout>
   <FormingSummonModal
-    v-model:visible="visibleModal"
+    :visible="visibleModal"
     :selected="selectable.selected"
     @success="handleSuccess"
+    @close="closeModal"
   />
 </template>
 
 <script setup lang="ts">
-import { useQuery } from "vue-query";
 import { RouterLink } from "vue-router";
 
 import { SEO } from "@/lib/meta";
-import { EButton, ECheckbox } from "@/shared/components/inputs";
+import { VButton, VCheckbox } from "@/shared/components/inputs";
 import {
-  TableBody,
-  TableHead,
-  EPagination,
-  PaginationInfo,
-  useSortable,
-  useProvideSortable,
-  useFilterable,
-  useProvideFilterable,
-  type GetRowKeyFn,
-  type TableColumns,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type TableRowCtx,
-  type GetTooltipRowFn,
-  type IsDisabledRowFn,
+  DataTableBody,
+  DataTableHead,
+  VPagination,
+  VPaginationInfo,
 } from "@/shared/components/data-display";
+import { LinkIcon } from "@/shared/components/icons";
 import {
   PageLayout,
   ContentContainer,
-  SidebarFiller,
+  PageSidebarFiller,
 } from "@/shared/components/layouts";
 import { isNonNullable } from "@/shared/utils/equal";
 import {
-  getApplicationForms,
-  FormingSummonModal,
-} from "@/features/application-forms";
-import { LinkIcon } from "@/shared/components/icons";
-import {
-  applicationFormStatusOptions,
-  isNonApplicationFormAccepted,
-  displayApplicationFormStatus,
-  getApplicationFormTypes,
-  useApplicationFormSelectable,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type ApplicationForm,
+  FormingSummonModal,
+  isNonApplicationFormAccepted,
+  useApplicationFormsTable,
+  useApplicationFormSelectable,
 } from "@/features/application-forms";
-import { usePagination } from "@/shared/composables";
-import { displayNullableData } from "@/shared/utils/display";
-import { displayDate } from "@/shared/utils/display";
-
-const columns: TableColumns<ApplicationForm> = [
-  {
-    key: "id",
-    type: "slot",
-    headerName: "ID",
-    slotName: "selection",
-    width: "174px",
-    sortOptions: {
-      sortable: true,
-      sortField: "1",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "searchId",
-      filterType: "primitive",
-    },
-    tooltipOptions: {
-      tooltiped: true,
-      сomputed: (row) =>
-        isNonApplicationFormAccepted(row)
-          ? "Данная заявка уже сформирована в повестку или протокол"
-          : row.id,
-    },
-  },
-  {
-    key: "license",
-    type: "standard",
-    field: "numberLicense",
-    headerName: "Номер лицензии",
-    width: "147px",
-    sortOptions: {
-      sortable: true,
-      sortField: "4",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "searchNumberLicense",
-      filterType: "common",
-    },
-    tooltipOptions: {
-      tooltiped: true,
-      сomputed: (row) => displayNullableData(row.numberLicense),
-    },
-  },
-  {
-    key: "type",
-    type: "standard",
-    field: "type",
-    headerName: "Вид заявки",
-    width: "382px",
-    sortOptions: {
-      sortable: true,
-      sortField: "2",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "typeApplicationForm",
-      filterType: "multiSelect",
-      getOptions: () =>
-        getApplicationFormTypes().then((data) =>
-          data.items.map(({ id, name }) => ({ value: id, label: name }))
-        ),
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-  {
-    key: "name",
-    type: "standard",
-    field: "nameAreaNedr",
-    headerName: "Наименование участка недр",
-    width: "170px",
-    sortOptions: {
-      sortable: true,
-      sortField: "5",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "searchNameAreaNedr",
-      filterType: "common",
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-  {
-    key: "subject",
-    type: "standard",
-    field: "subjectRF",
-    headerName: "Субьъект РФ",
-    width: "147px",
-    sortOptions: {
-      sortable: true,
-      sortField: "6",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "searchSubjectRf",
-      filterType: "common",
-    },
-    tooltipOptions: {
-      tooltiped: true,
-      сomputed: (row) => displayNullableData(row.subjectRF),
-    },
-  },
-  {
-    key: "complainant",
-    type: "standard",
-    field: "complainant",
-    headerName: "Заявитель",
-    width: "220px",
-    sortOptions: {
-      sortable: true,
-      sortField: "3",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "searchComplainant",
-      filterType: "common",
-    },
-    tooltipOptions: {
-      tooltiped: true,
-      сomputed: (row) => row.complainant,
-    },
-  },
-  {
-    key: "date",
-    type: "date",
-    field: "createdAt",
-    headerName: "Дата и время",
-    width: "170px",
-    sortOptions: {
-      sortable: true,
-      sortField: "7",
-    },
-    filterOptions: {
-      filterable: true,
-      filterType: "dateRange",
-      filterField: "date",
-    },
-    tooltipOptions: {
-      tooltiped: true,
-      сomputed: (row) => displayDate(row.createdAt),
-    },
-  },
-  {
-    key: "date",
-    type: "сomputed",
-    сomputed: (row) => displayApplicationFormStatus(row.status),
-    headerName: "Статус",
-    width: "170px",
-    sortOptions: {
-      sortable: true,
-      sortField: "8",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "statusApplicationForm",
-      filterType: "multi-select",
-      getOptions: () => Promise.resolve(applicationFormStatusOptions),
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-];
-
-const { total, page, pageSize, resetPagination } = usePagination();
 
 const {
   selectable,
@@ -298,53 +113,20 @@ const {
   changeVisibleModal,
   changeSelectable,
   clearSelected,
+  closeModal,
 } = useApplicationFormSelectable();
 
-const filterable = useFilterable({
-  onChange: () => {
-    resetPagination();
-  },
+const {
+  columns,
+  pagination: { page, pageSize, total },
+  applicationFormsQuery: { data, isFetching, refetch },
+  isDisabledRow,
+  getRowKey,
+  getTooltipRow,
+} = useApplicationFormsTable({
+  nonSelected: nonSelected,
+  isNonSelectedType: isNonSelectedType,
 });
-useProvideFilterable(filterable);
-
-const sortable = useSortable({
-  onChange: () => {
-    resetPagination();
-  },
-});
-useProvideSortable(sortable);
-
-const { data, isFetching, refetch } = useQuery(
-  [
-    "application-forms",
-    { page, sort: sortable.sort, filters: filterable.filters },
-  ],
-  () =>
-    getApplicationForms({
-      pagination: { page: page.value },
-      sort: sortable.sort,
-      filters: filterable.filters.value,
-    }),
-  {
-    keepPreviousData: true,
-    onSuccess: (data) => {
-      total.value = data.total;
-    },
-  }
-);
-
-const isDisabledRow: IsDisabledRowFn<ApplicationForm> = (row) =>
-  isNonSelectedType(row) ||
-  (!nonSelected.value && isNonApplicationFormAccepted(row));
-
-const getRowKey: GetRowKeyFn<ApplicationForm> = (row) => row.id;
-
-const getTooltipRow: GetTooltipRowFn<ApplicationForm> = (row) =>
-  !nonSelected.value && isNonApplicationFormAccepted(row)
-    ? "Данная заявка уже сформирована в повестку или протокол"
-    : isNonSelectedType(row)
-    ? "Множественные операции возможны только с заявками одного вида"
-    : null;
 
 const handleSuccess = () => {
   clearSelected();

@@ -1,6 +1,7 @@
-export { default as DatePicker } from "./DatePicker.vue";
-export { default as EButton } from "./EButton.vue";
-export { default as ECheckbox } from "./ECheckbox.vue";
-export { default as TextInput } from "./TextInput.vue";
-export { default as WrapperField } from "./WrapperField.vue";
-export { default as PasswordInput } from "./PasswordInput.vue";
+export { default as VButton } from "./VButton.vue";
+export { default as VCheckbox } from "./VCheckbox.vue";
+export { default as VDatePicker } from "./VDatePicker.vue";
+export { default as VField } from "./VField.vue";
+export { default as VPasswordInput } from "./VPasswordInput.vue";
+export { default as VSingleUpload } from "./VSingleUpload.vue";
+export { default as VTextInput } from "./VTextInput.vue";

@@ -1,20 +1,24 @@
 import type { Nullable } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
 
+export interface ErrorDto {
+  message: string;
+}
+
 export interface ResultDto<T> {
   data: Nullable<T>;
-  err: {
-    message: Nullable<string>;
-  };
+  err: Nullable<ErrorDto>;
 }
 
 export const unwrapResultDto = <T>(result: ResultDto<T>): T => {
   switch (true) {
     case isNonNullable(result.data):
       return result.data as T;
-    case isNonNullable(result.err.message):
+    case isNonNullable(result.err):
       throw new Error(
-        `called "unwrapResultDto" on err message: ${result.err.message}`
+        `called "unwrapResultDto" on err message: ${
+          (result.err as ErrorDto).message
+        }`
       );
     default:
       throw new Error(`called "unwrapResultDto" on empty data and err`);

@@ -29,4 +29,23 @@ export const summonsRoutes: RouteRecordRaw[] = [
     },
     component: () => import("@/features/summons/views/SummonInfoView.vue"),
   },
+  {
+    path: "/summons/:id/template/:name?",
+    name: "summonTemplate",
+    meta: {
+      typeOfPublicity: "private",
+      allowedRoles: ["SecretaryCommission", "MemberCommission"],
+    },
+    component: () => import("@/features/summons/views/SummonTemplateView.vue"),
+  },
+  {
+    path: "/summons/:id/commission-members",
+    name: "summonCommissionMembers",
+    meta: {
+      typeOfPublicity: "private",
+      allowedRoles: ["SecretaryCommission", "MemberCommission"],
+    },
+    component: () =>
+      import("@/features/summons/views/SummonCommissionMembersView.vue"),
+  },
 ];

@@ -5,15 +5,15 @@ DOCKER_IMAGE=$(DOCKER_NAMESPACE):frontend-etp
 
 # build
 
-build-image:
-	docker build -t $(DOCKER_IMAGE) .
+build:
+	@docker build -t $(DOCKER_IMAGE) .
 
 # run
 
-run-image:
-	docker run -p 80:80 $(DOCKER_IMAGE)
+start:
+	@docker run -p 80:80 $(DOCKER_IMAGE)
 
 # push
 
-push-image:
-	docker push $(DOCKER_IMAGE)
+push:
+	@docker push $(DOCKER_IMAGE)

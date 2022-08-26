@@ -5,26 +5,25 @@
       <ApplicationFormsBackLink />
     </template>
     <template #header>
-      <ApplicationFormSublinks :application-form-id="applicationFormID" />
+      <ApplicationFormSubLinks :application-form-id="applicationFormID" />
     </template>
     <template #default>
-      <LoadingOverlay fixed :visible="isFetching" />
-      <PagePaper v-if="isNonNullable(data)">
-        <div class="dafm">
-          <ETypography variant="title1" class="dafm__tilte">
+      <PagePaper :loading="isFetching">
+        <div v-if="isNonNullable(data)" class="dafm">
+          <VTypography variant="title1" class="dafm__tilte">
             Подробная информация о заявке
-          </ETypography>
+          </VTypography>
           <div class="dafm__content">
-            <ETypography class="dafm__text" variant="body4">ID:</ETypography>
-            <ETypography class="dafm__text" variant="body4">
+            <VTypography class="dafm__text" variant="body4">ID:</VTypography>
+            <VTypography class="dafm__text" variant="body4">
               {{ data.id }}
-            </ETypography>
-            <ETypography class="dafm__text" variant="body4">
+            </VTypography>
+            <VTypography class="dafm__text" variant="body4">
               Тип процедуры:
-            </ETypography>
-            <ETypography class="dafm__text" variant="body4">
+            </VTypography>
+            <VTypography class="dafm__text" variant="body4">
               {{ data.typeApplicationFormText }}
-            </ETypography>
+            </VTypography>
           </div>
           <EarlyTerminationInfo :early-termination="data" />
         </div>
@@ -36,13 +35,12 @@
 <script setup lang="ts">
 import { SEO } from "@/lib/meta";
 import { useParamID } from "@/shared/composables";
-import { LoadingOverlay } from "@/shared/components/overlay";
 import { PageLayout, PagePaper } from "@/shared/components/layouts";
-import { ETypography } from "@/shared/components/data-display";
+import { VTypography } from "@/shared/components/data-display";
 import { isNonNullable } from "@/shared/utils/equal";
 import {
   ApplicationFormsBackLink,
-  ApplicationFormSublinks,
+  ApplicationFormSubLinks,
   EarlyTerminationInfo,
   useApplicationForm,
 } from "@/features/application-forms";

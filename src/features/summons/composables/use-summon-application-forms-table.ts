@@ -12,8 +12,8 @@ import {
   type TableColumns,
 } from "@/shared/components/data-display";
 import {
-  getApplicationFormTypes,
   type ApplicationForm,
+  applicationFormTypeOptions,
 } from "@/features/application-forms";
 import { useSummonApplicationForms } from "@/features/summons";
 import { displayDate } from "@/shared/utils/display";
@@ -21,9 +21,9 @@ import { displayDate } from "@/shared/utils/display";
 const columns: TableColumns<ApplicationForm> = [
   {
     key: "id",
-    type: "standard",
-    field: "id",
+    type: "slot",
     headerName: "ID",
+    slotName: "selection",
     width: "174px",
     sortOptions: {
       sortable: true,
@@ -62,9 +62,9 @@ const columns: TableColumns<ApplicationForm> = [
   {
     key: "type",
     type: "standard",
-    field: "typeApplicationFormText",
-    headerName: "Вид заявки",
-    width: "450px",
+    field: "type",
+    headerName: "Тип процедуры",
+    width: "390px",
     sortOptions: {
       sortable: true,
       sortField: "2",
@@ -73,10 +73,7 @@ const columns: TableColumns<ApplicationForm> = [
       filterable: true,
       filterField: "typeApplicationForm",
       filterType: "multiSelect",
-      getOptions: () =>
-        getApplicationFormTypes().then((data) =>
-          data.items.map(({ id, name }) => ({ value: id, label: name }))
-        ),
+      getOptions: () => Promise.resolve(applicationFormTypeOptions),
     },
     tooltipOptions: {
       tooltiped: false,
@@ -152,11 +149,30 @@ const columns: TableColumns<ApplicationForm> = [
       sortable: false,
     },
     filterOptions: {
-      filterable: false,
+      filterable: true,
+      filterType: "dateRange",
+      filterField: "date",
     },
     tooltipOptions: {
       tooltiped: true,
       сomputed: (row) => displayDate(row.createdAt),
+    },
+  },
+
+  {
+    key: "delete",
+    type: "slot",
+    slotName: "delete",
+    headerName: "",
+    width: "60px",
+    sortOptions: {
+      sortable: false,
+    },
+    filterOptions: {
+      filterable: false,
+    },
+    tooltipOptions: {
+      tooltiped: false,
     },
   },
 ];
@@ -196,9 +212,9 @@ export const useSummonApplicationFormsTable = (
 
   const summonApplicationFormsQuery = useSummonApplicationForms({
     summonID: options.summonID,
-    pagination: { page: pagination.page.value },
+    page: pagination.page,
+    filters: filterable.filters,
     sort: sortable.sort,
-    filters: filterable.filters.value,
     onSuccess: (data) => {
       pagination.total.value = data.total;
     },

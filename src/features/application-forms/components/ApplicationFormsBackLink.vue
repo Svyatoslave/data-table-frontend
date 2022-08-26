@@ -1,7 +1,7 @@
 <template>
-  <BackLink to="/application-forms">Список заявок</BackLink>
+  <VBackLink to="/application-forms">Список заявок</VBackLink>
 </template>
 
 <script setup lang="ts">
-import { BackLink } from "@/shared/components/navigation";
+import { VBackLink } from "@/shared/components/navigation";
 </script>

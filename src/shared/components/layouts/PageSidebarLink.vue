@@ -8,16 +8,16 @@
       [`sidebar-link--active`]: active,
     }"
   >
-    <ETypography variant="title2" tag="h3">
+    <VTypography variant="title2" tag="h3">
       <slot></slot>
-    </ETypography>
+    </VTypography>
   </RouterLink>
 </template>
 
 <script setup lang="ts">
 import { RouterLink, useRoute } from "vue-router";
 
-import { ETypography } from "@/shared/components/data-display";
+import { VTypography } from "@/shared/components/data-display";
 import { computed } from "vue";
 
 export interface PageSidebarLinkProps {

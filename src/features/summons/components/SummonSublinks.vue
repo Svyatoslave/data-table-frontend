@@ -1,19 +1,19 @@
 <template>
-  <PageSublinks :sublinks="sublinks" />
+  <PageSubLinks :sub-links="subLinks" />
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { PageSublinks, type Sublink } from "@/shared/components/layouts";
+import { type SubLink, PageSubLinks } from "@/shared/components/layouts";
 
-export interface SummonSublinksProps {
+export interface SummonSubLinksProps {
   summonId: string;
 }
 
-const props = defineProps<SummonSublinksProps>();
+const props = defineProps<SummonSubLinksProps>();
 
-const sublinks = computed((): Sublink[] => [
+const subLinks = computed((): SubLink[] => [
   {
     key: "summonApplicationForm",
     disabled: false,
@@ -28,7 +28,7 @@ const sublinks = computed((): Sublink[] => [
   },
   {
     key: "summonTemplate",
-    disabled: true,
+    disabled: false,
     to: `/summons/${props.summonId}/template`,
     name: "Шаблон",
   },
@@ -40,7 +40,7 @@ const sublinks = computed((): Sublink[] => [
   },
   {
     key: "summonCommissionMembers",
-    disabled: true,
+    disabled: false,
     to: `/summons/${props.summonId}/commission-members`,
     name: "Участники комиссии",
   },

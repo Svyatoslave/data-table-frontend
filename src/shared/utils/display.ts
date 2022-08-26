@@ -2,7 +2,7 @@ import { dayjs } from "@/lib/day-js";
 import type { Nullable, Optional } from "@/shared/types/utility";
 import { isNonNullable } from "@/shared/utils/equal";
 
-const NO_DATA = "Нет данных";
+export const NO_DATA = "Нет данных";
 
 export const displayNullableData = <T>(
   data: Nullable<T> | Optional<T>

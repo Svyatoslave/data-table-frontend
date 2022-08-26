@@ -1,3 +1,5 @@
+import type { Nullable } from "@/shared/types/utility";
+
 export type UserRoleName = "Admin" | "MemberCommission" | "SecretaryCommission";
 
 export type UserRole = {
@@ -7,12 +9,12 @@ export type UserRole = {
 
 export type User = {
   id: string;
-  login: string;
-  name: string;
+  login: Nullable<string>;
+  name: Nullable<string>;
   surname: string;
-  patronymic: string;
-  email: string;
-  numberPhone: string;
-  organizationName: string;
+  patronymic: Nullable<string>;
+  email: Nullable<string>;
+  numberPhone: Nullable<string>;
+  organizationName: Nullable<string>;
   role: UserRole;
 };

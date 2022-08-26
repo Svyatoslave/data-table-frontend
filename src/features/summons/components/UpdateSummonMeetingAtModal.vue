@@ -1,83 +1,63 @@
 <template>
-  <ModalOverlay :visible="visible">
-    <EModal
-      :visible="isCurrent(`confirmation`)"
+  <VModalOverlay :visible="visible">
+    <VModal
+      size="m"
       title="Подтверждение"
       subtitle="Вы точно хотите обновить дату заседания?"
-      @update:visible="(value) => emit('update:visible', value)"
+      @close="emit('update:visible', false)"
     >
       <div class="fsm">
         <div class="fsm__subtitle"></div>
         <div class="fsm__content">
-          <ETable>
+          <VTable>
             <template #header>
-              <ETr>
-                <ETh>Старая дата заседания</ETh>
-                <ETh>Новая дата заседания</ETh>
-              </ETr>
+              <VTr>
+                <VTh>Старая дата заседания</VTh>
+                <VTh>Новая дата заседания</VTh>
+              </VTr>
             </template>
             <template #body>
-              <ETr class="fsm__table-row">
-                <ETd>
+              <VTr class="fsm__table-row">
+                <VTd>
                   {{ displayDate(oldMeetingAt) }}
-                </ETd>
-                <ETd>
+                </VTd>
+                <VTd>
                   {{ displayDate(newMeetingAt) }}
-                </ETd>
-              </ETr>
+                </VTd>
+              </VTr>
             </template>
-          </ETable>
+          </VTable>
         </div>
       </div>
       <template #actions>
-        <EButton
+        <VButton
           :loading="isLoading"
           variant="contained"
           color="primary"
           @click="handleConfirmation"
         >
           Подтвердить
-        </EButton>
-        <EButton
+        </VButton>
+        <VButton
           variant="outlined"
           color="primary"
           @click="emit('cancel'), emit('update:visible', false)"
         >
           Отменить
-        </EButton>
+        </VButton>
       </template>
-    </EModal>
-    <SuccessDialog
-      :visible="isCurrent(`success`)"
-      title="Дата заседания успешно обновлена"
-      subtitle="Подробная обновленная информация будет доступна в разделе «Информация»"
-      @update:visible="(value) => emit('update:visible', value)"
-      @success="handleSuccess"
-    />
-    <ErrorDialog
-      :visible="isCurrent(`error`)"
-      title="Ошибка сервера"
-      subtitle="Дата заседания не обновлена. Проверьте подключение к интернету"
-      @update:visible="(value) => emit('update:visible', value)"
-      @failure="handleError"
-    />
-  </ModalOverlay>
+    </VModal>
+  </VModalOverlay>
 </template>
 
 <script setup lang="ts">
-import { useStepper } from "@vueuse/core";
-
-import {
-  EModal,
-  ModalOverlay,
-  SuccessDialog,
-  ErrorDialog,
-} from "@/shared/components/overlay";
-import { EButton } from "@/shared/components/inputs";
-import { ETable, ETd, ETr, ETh } from "@/shared/components/data-display";
+import { VModal, VModalOverlay } from "@/shared/components/overlay";
+import { VButton } from "@/shared/components/inputs";
+import { VTable, VTd, VTr, VTh } from "@/shared/components/data-display";
 import type { Nullable } from "@/shared/types/utility";
 import { displayDate } from "@/shared/utils/display";
 import { useUpdateSummonMeetingAt } from "../composables/use-update-summon-meeting-at";
+import { useToast } from "@/lib/toast";
 
 export interface UpdateSummonMeetingAtModalProps {
   visible: boolean;
@@ -97,28 +77,23 @@ const props = defineProps<UpdateSummonMeetingAtModalProps>();
 
 const emit = defineEmits<UpdateSummonMeetingAtModalEmits>();
 
-const { goTo, isCurrent } = useStepper(["confirmation", "success", "error"]);
+const toast = useToast();
 
 const { mutate, isLoading } = useUpdateSummonMeetingAt({
   onSuccess: () => {
-    goTo("success");
+    emit("update:visible", false);
+    emit("success");
+    toast({ kind: "success", title: "Дата заседания успешно обновлена" });
   },
   onError: () => {
-    goTo("error");
+    emit("update:visible", false);
+    emit("failure");
+    toast({ kind: "warning", title: "Ошибка сервера" });
   },
 });
 
 const handleConfirmation = () => {
   mutate({ summonID: props.summonId, meetingAt: props.newMeetingAt as Date });
-};
-
-const handleSuccess = () => {
-  goTo("confirmation");
-  emit("success");
-};
-
-const handleError = () => {
-  goTo("confirmation");
 };
 </script>
 

@@ -25,3 +25,7 @@ export const documentScrollToTop = () => {
     block: "start",
   });
 };
+
+export const refreshLocation = () => {
+  window.location.assign(window.location.origin);
+};

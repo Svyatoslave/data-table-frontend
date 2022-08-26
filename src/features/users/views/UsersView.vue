@@ -3,14 +3,14 @@
   <PageLayout>
     <template #header>
       <div class="users-view__header">
-        <SidebarFiller />
+        <PageSidebarFiller />
         <ContentContainer>
-          <TableHead :columns="columns" />
+          <DataTableHead :columns="columns" />
         </ContentContainer>
       </div>
     </template>
     <template #default>
-      <TableBody
+      <DataTableBody
         :loading="isFetching"
         :rows="data?.items"
         :columns="columns"
@@ -23,11 +23,11 @@
 
 <script setup lang="ts">
 import { SEO } from "@/lib/meta";
-import { TableBody, TableHead } from "@/shared/components/data-display";
+import { DataTableBody, DataTableHead } from "@/shared/components/data-display";
 import {
   PageLayout,
   ContentContainer,
-  SidebarFiller,
+  PageSidebarFiller,
 } from "@/shared/components/layouts";
 import { useUsersTable } from "@/features/users";
 

@@ -112,7 +112,7 @@ export type TypeSearchDto =
 
 type ComparisonAndOrDto = "true" | "false";
 
-export type FiltersDto = Record<string, string | number>;
+export type FiltersDto = Record<string, string | number | (string | number)[]>;
 
 const mapPrimitiveFilterToDto = (
   filterField: string,
@@ -174,7 +174,7 @@ const mapMultiSelectFilterToDto = (
   filterField: string,
   filter: MultiSelectFilterPayload
 ): FiltersDto => ({
-  [pascalCase(filterField)]: filter.values.join(","),
+  [pascalCase(filterField)]: filter.values,
 });
 
 const mapDateRangeFilterToDto = (

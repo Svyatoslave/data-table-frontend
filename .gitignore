@@ -17,11 +17,15 @@ dist
 !.vscode/settings.json
 .idea
 
-# pnpm lock
+# pnpm
 pnpm-lock.yaml
 
-# bun lock
+# bun
 bun.lockb
+.bin
 
 # other
 .DS_Store
+
+# env
+.env

@@ -8,13 +8,13 @@
             <RosnedraIcon :size="34" />
             <RosgeolfondIcon :size="34" />
           </div>
-          <EDivider flex-item orientation="vertical" />
+          <VDivider flex-item orientation="vertical" />
           <div class="login-view__title-block">
             <NH1 class="login-view__title">Рассмотрение комиссии</NH1>
             <NH3 class="login-view__subtitle">Версия 1.0</NH3>
           </div>
         </div>
-        <EDivider flex-item />
+        <VDivider flex-item />
         <LoginForm @success="onSuccess" />
       </div>
       <img
@@ -28,50 +28,23 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { isDefined } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { NH1, NH3 } from "naive-ui";
 
 import { SEO } from "@/lib/meta";
 import { RosnedraIcon, RosgeolfondIcon } from "@/shared/components/icons";
-import { EDivider } from "@/shared/components/data-display";
-import {
-  checkAccess,
-  getDefaultRouteByRole,
-  isPrivateRoute,
-  LoginForm,
-} from "@/features/auth";
+import { VDivider } from "@/shared/components/data-display";
+import { getDefaultRouteByRole, LoginForm } from "@/features/auth";
 import { useAuthStore } from "@/stores/auth";
 import type { User } from "@/features/users";
 
 const router = useRouter();
 
 const authStore = useAuthStore();
-const { callbackRoute, user } = storeToRefs(authStore);
+const { user } = storeToRefs(authStore);
 
 const onSuccess = async () => {
-  const nonRouteNow =
-    !isDefined(callbackRoute) || !router.hasRoute(callbackRoute.value.name);
-
-  const isPrivateCallbackRoute =
-    !isDefined(callbackRoute) || isPrivateRoute(callbackRoute.value);
-
-  const canAccess =
-    isDefined(user.value) &&
-    isDefined(callbackRoute.value) &&
-    isDefined(callbackRoute.value.meta.allowedRoles) &&
-    checkAccess(user.value, callbackRoute.value.meta.allowedRoles);
-
-  switch (true) {
-    case !nonRouteNow && isPrivateCallbackRoute && canAccess:
-      await router.replace(callbackRoute.value?.fullPath as string);
-      break;
-    default:
-      await router.replace(
-        getDefaultRouteByRole((user.value as User).role.name)
-      );
-      break;
-  }
+  await router.replace(getDefaultRouteByRole((user.value as User).role.name));
 };
 </script>
 

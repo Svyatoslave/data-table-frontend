@@ -3,14 +3,14 @@
   <PageLayout>
     <template #header>
       <div class="summons-view__header">
-        <SidebarFiller />
+        <PageSidebarFiller />
         <ContentContainer>
-          <TableHead :columns="columns" />
+          <DataTableHead :columns="columns" />
         </ContentContainer>
       </div>
     </template>
     <template #default>
-      <TableBody
+      <DataTableBody
         :loading="isFetching"
         :rows="data?.items"
         :columns="columns"
@@ -28,18 +28,23 @@
             </RouterLink>
           </div>
         </template>
-      </TableBody>
+        <template #delete="{ row }: TableRowCtx<Summon>">
+          <div>
+            <TrashIcon @click="deleteSummon(String(row.id))" />
+          </div>
+        </template>
+      </DataTableBody>
     </template>
     <template #footer>
       <div></div>
       <template v-if="isNonNullable(total)">
-        <EPagination
+        <VPagination
           v-model:page="page"
           :total="total"
           :page-size="pageSize"
           :per-page="5"
         />
-        <PaginationInfo
+        <VPaginationInfo
           text="Показаны повестки"
           :page="page"
           :page-size="pageSize"
@@ -51,152 +56,41 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
-import { useQuery } from "vue-query";
-
 import { SEO } from "@/lib/meta";
 import {
-  TableBody,
-  TableHead,
-  EPagination,
-  PaginationInfo,
-  useSortable,
-  useProvideSortable,
-  useFilterable,
-  useProvideFilterable,
-  type GetRowKeyFn,
-  type TableColumns,
+  DataTableBody,
+  DataTableHead,
+  VPagination,
+  VPaginationInfo,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type TableRowCtx,
 } from "@/shared/components/data-display";
 import {
   PageLayout,
   ContentContainer,
-  SidebarFiller,
+  PageSidebarFiller,
 } from "@/shared/components/layouts";
-import { LinkIcon } from "@/shared/components/icons";
+import { LinkIcon, TrashIcon } from "@/shared/components/icons";
 import { isNonNullable } from "@/shared/utils/equal";
-import { usePagination } from "@/shared/composables";
-import { getApplicationFormTypes } from "@/features/application-forms";
-import { getSummons, type Summon } from "@/features/summons";
+import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type Summon,
+  useSummonsTable,
+  useDeleteSummonModal,
+} from "@/features/summons";
 
-const columns: TableColumns<Summon> = [
-  {
-    key: "id",
-    type: "slot",
-    headerName: "ID",
-    slotName: "selection",
-    width: "174px",
-    sortOptions: {
-      sortable: true,
-      sortField: "1",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "searchId",
-      filterType: "primitive",
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-  {
-    key: "type",
-    type: "standard",
-    field: "name",
-    headerName: "Тип процедуры",
-    width: "1090px",
-    sortOptions: {
-      sortable: true,
-      sortField: "2",
-    },
-    filterOptions: {
-      filterable: true,
-      filterField: "typeApplicationForm",
-      filterType: "multiSelect",
-      getOptions: () =>
-        getApplicationFormTypes().then((data) =>
-          data.items.map(({ id, name }) => ({ value: id, label: name }))
-        ),
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-  {
-    key: "meetingAt",
-    type: "date",
-    field: "meetingAt",
-    headerName: "Дата и время заседания",
-    width: "170px",
-    sortOptions: {
-      sortable: true,
-      sortField: "4",
-    },
-    filterOptions: {
-      filterable: false,
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-  {
-    key: "createAt",
-    type: "date",
-    field: "createAt",
-    headerName: "Дата и время формирования",
-    width: "170px",
-    sortOptions: {
-      sortable: true,
-      sortField: "5",
-    },
-    filterOptions: {
-      filterable: false,
-    },
-    tooltipOptions: {
-      tooltiped: false,
-    },
-  },
-];
+const {
+  columns,
+  pagination: { page, pageSize, total },
+  summonsQuery: { data, isFetching, refetch },
+  getRowKey,
+} = useSummonsTable();
 
-const getRowKey: GetRowKeyFn<Summon> = (row) => row.id;
-
-const { total, page, pageSize, resetPagination } = usePagination();
-
-const filterable = useFilterable({
-  onChange: () => {
-    resetPagination();
+const { deleteSummon } = useDeleteSummonModal({
+  onSuccess: () => {
+    refetch.value();
   },
 });
-useProvideFilterable(filterable);
-
-const sortable = useSortable({
-  onChange: () => {
-    resetPagination();
-  },
-});
-useProvideSortable(sortable);
-
-const queryKey = [
-  "summons",
-  { page, sort: sortable.sort, filters: filterable.filters },
-];
-
-const { data, isFetching } = useQuery(
-  queryKey,
-  () =>
-    getSummons({
-      pagination: { page: page.value },
-      sort: sortable.sort,
-      filters: filterable.filters.value,
-    }),
-  {
-    keepPreviousData: true,
-    onSuccess: (data) => {
-      total.value = data.total;
-    },
-  }
-);
 </script>
 
 <style scoped>

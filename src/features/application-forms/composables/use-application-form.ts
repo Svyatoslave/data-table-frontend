@@ -1,7 +1,9 @@
 import { useQuery, type UseQueryReturnType } from "vue-query";
 
-import type { DetailApplicationForm } from "../types/some";
-import { getApplicationForm } from "../api/get-application-form";
+import {
+  type DetailApplicationForm,
+  getApplicationForm,
+} from "@/features/application-forms";
 
 export interface UseApplicationFormOptions {
   applicationFormID: string;

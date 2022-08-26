@@ -1,26 +1,25 @@
 <template>
   <div style="width: 100%">
     <form class="login-form" @submit="onSubmit">
-      <WrapperField :error="errors.login" class="login-form__field">
-        <TextInput
+      <VField :error="errors.login" class="login-form__field">
+        <VTextInput
           v-model="login"
           name="login"
           type="text"
           placeholder="Логин"
           :error="errors.login"
         />
-      </WrapperField>
-      <WrapperField :error="errors.password" class="login-form__field">
-        <PasswordInput
+      </VField>
+      <VField :error="errors.password" class="login-form__field">
+        <VPasswordInput
           v-model="password"
           name="password"
           placeholder="Пароль"
           :error="errors.password"
         />
-      </WrapperField>
-
+      </VField>
       <div class="login-form__actions">
-        <EButton
+        <VButton
           type="submit"
           :loading="isSubmitting"
           :disabled="isSubmitting"
@@ -28,10 +27,10 @@
           variant="contained"
         >
           Войти
-        </EButton>
-        <EButton disabled color="primary" variant="outlined">
+        </VButton>
+        <VButton color="primary" variant="outlined" @click="handleLoginEsia">
           Вход через ЕСИА
-        </EButton>
+        </VButton>
       </div>
     </form>
   </div>
@@ -43,11 +42,12 @@ import { object, string, type InferType } from "yup";
 
 import { useAuthStore } from "@/stores/auth";
 import {
-  EButton,
-  WrapperField,
-  TextInput,
-  PasswordInput,
+  VButton,
+  VField,
+  VTextInput,
+  VPasswordInput,
 } from "@/shared/components/inputs";
+import { createKeycloakLink } from "../utils/router";
 
 interface LoginViewEmits {
   (e: "success"): void;
@@ -79,6 +79,10 @@ const onSubmit = handleSubmit(async (values) => {
   await authStore.login(values);
   emit("success");
 });
+
+const handleLoginEsia = () => {
+  window.location.href = createKeycloakLink();
+};
 </script>
 
 <style scoped>

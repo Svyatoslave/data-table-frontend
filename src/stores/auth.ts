@@ -7,13 +7,15 @@ import { isNonNullable } from "@/shared/utils/equal";
 import { isDev } from "@/shared/config";
 import type { User } from "@/features/users";
 import {
+  type LoginCredentialsPayload,
   loadUser,
   login,
+  loginEsia,
   refresh,
   isBeforeExpired,
-  type LoginCredentialsPayload,
   parseExpired,
   logout,
+  getKeycloakToken,
 } from "@/features/auth";
 
 type AuthenticationStatus = "unknown" | "authenticated" | "unauthenticated";
@@ -89,6 +91,17 @@ export const useAuthStore = defineStore("auth", {
     },
     async login(payload: LoginCredentialsPayload) {
       await login(payload);
+      const user = await loadUser();
+
+      this.$patch({
+        user,
+        status: "authenticated",
+      });
+    },
+    async loadUserFromEsia(code: string) {
+      const token = await getKeycloakToken({ code });
+      await loginEsia({ token: token.accessToken });
+
       const user = await loadUser();
 
       this.$patch({

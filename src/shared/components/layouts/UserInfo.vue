@@ -17,26 +17,30 @@
       />
     </template>
     <div v-if="isNonNullable(user)" class="user-info__section user-info__info">
-      <ETypography variant="title2">
+      <VTypography variant="title2">
         {{ displayUserFullName(user) }}
-      </ETypography>
-      <ETypography variant="body6" class="user-info__email">
+      </VTypography>
+      <VTypography
+        v-if="isNonNullable(user.email)"
+        variant="body6"
+        class="user-info__email"
+      >
         {{ user.email }}
-      </ETypography>
+      </VTypography>
     </div>
-    <EDivider />
+    <VDivider />
     <div
       v-if="isNonNullable(user)"
       class="user-info__section user-info__actions"
     >
-      <EButton
+      <VButton
         full-width
         :loading="isLoading"
         size="s"
         color="success"
         @click="handleLogout"
         >Выйти
-      </EButton>
+      </VButton>
     </div>
   </NPopover>
 </template>
@@ -50,16 +54,16 @@ import { storeToRefs } from "pinia";
 
 import { useAuthStore } from "@/stores/auth";
 import { UserIcon } from "@/shared/components/icons";
-import { ETypography, EDivider } from "@/shared/components/data-display";
-import { EButton } from "@/shared/components/inputs";
+import { VTypography, VDivider } from "@/shared/components/data-display";
+import { VButton } from "@/shared/components/inputs";
 import { isNonNullable } from "@/shared/utils/equal";
 import { displayUserFullName } from "@/features/users";
 import type { Nullable } from "@/shared/types/utility";
 import { unrefElement } from "@vueuse/core";
 
 const router = useRouter();
-
 const authStore = useAuthStore();
+
 const { user } = storeToRefs(authStore);
 
 const showPopover = ref<boolean>(false);

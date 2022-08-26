@@ -18,6 +18,7 @@ interface UseApplicationFormSelectableReturn {
   changeVisibleModal: (value: boolean) => void;
   changeSelectable: (row: ApplicationForm) => void;
   clearSelected: () => void;
+  closeModal: () => void;
 }
 
 export const useApplicationFormSelectable =
@@ -65,6 +66,10 @@ export const useApplicationFormSelectable =
       selectable.type = null;
     };
 
+    const closeModal = () => {
+      visibleModal.value = false;
+    };
+
     return {
       selectable,
       visibleModal,
@@ -74,5 +79,6 @@ export const useApplicationFormSelectable =
       changeVisibleModal,
       changeSelectable,
       clearSelected,
+      closeModal,
     };
   };

@@ -2,5 +2,18 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "cSpell.words": [
+    "сomputed",
+    "cadesplugin",
+    "CAPICOM",
+    "composables",
+    "functors",
+    "licence",
+    "pinia",
+    "pnpm",
+    "rushstack",
+    "vitejs",
+    "vueuse"
+  ]
 }

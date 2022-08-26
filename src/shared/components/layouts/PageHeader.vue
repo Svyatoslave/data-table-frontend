@@ -8,35 +8,35 @@
             class="header__mono-logo"
             alt="mono-logo"
           />
-          <EDivider flex-item orientation="vertical" />
-          <ETypography
+          <VDivider flex-item orientation="vertical" />
+          <VTypography
             variant="title4"
             uppercase
             class="header__commission-exclusion"
           >
             Рассмотрение комиссии
-          </ETypography>
+          </VTypography>
         </div>
         <div class="header__info">
           <slot name="actions"></slot>
           <div class="header__actions">
-            <ETooltip :z-index="900" placement="bottom">
+            <VTooltip :z-index="900" placement="bottom">
               <template #trigger>
-                <EBadge class="header__icon">
+                <VBadge class="header__icon">
                   <template #content>6</template>
                   <template #default>
                     <BellIcon />
                   </template>
-                </EBadge>
+                </VBadge>
               </template>
               Функционал находится в разработке
-            </ETooltip>
+            </VTooltip>
             <UserInfo />
           </div>
         </div>
       </div>
     </ContentContainer>
-    <EDivider v-if="hasSlotContent(slots.default)" />
+    <VDivider v-if="hasSlotContent(slots.default)" />
     <slot></slot>
   </header>
 </template>
@@ -47,14 +47,14 @@ import { useElementSize, useCssVar } from "@vueuse/core";
 
 import { ContentContainer, UserInfo } from "@/shared/components/layouts";
 import {
-  EDivider,
-  EBadge,
-  ETypography,
+  VDivider,
+  VBadge,
+  VTypography,
 } from "@/shared/components/data-display";
 import { BellIcon } from "@/shared/components/icons";
 import { createMeasurableProp } from "@/shared/utils/styles";
 import { hasSlotContent } from "@/shared/utils/vue";
-import { ETooltip } from "@/shared/components/overlay";
+import { VTooltip } from "@/shared/components/overlay";
 
 const slots = useSlots();
 
