@@ -17,6 +17,7 @@ export { default as SelectCommissionMembersStep } from "./components/SelectCommi
 export { default as FormingSummonModal } from "./components/FormingSummonModal.vue";
 export { default as ConfirmApplicationFormsStep } from "./components/ConfirmApplicationFormsStep.vue";
 export { default as ConfirmCommissionMembersStep } from "./components/ConfirmCommissionMembersStep.vue";
+export { default as EditApplicationFormInfoView} from "./components/EditApplicationFormInfoView.vue";
 
 export * from "./config/status";
 export * from "./config/type";

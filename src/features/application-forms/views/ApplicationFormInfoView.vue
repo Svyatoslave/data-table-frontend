@@ -29,13 +29,24 @@
         </div>
       </PagePaper>
     </template>
+    <template #footer>
+      <VButton
+        variant="contained"
+        color="secondary"
+      >
+        Дополнительные данные
+      </VButton>
+      </template>
   </PageLayout>
+  <EditApplicationFormInfoView
+  :visible="true"/>
 </template>
 
 <script setup lang="ts">
 import { SEO } from "@/lib/meta";
 import { useParamID } from "@/shared/composables";
 import { PageLayout, PagePaper } from "@/shared/components/layouts";
+import { VButton } from "@/shared/components/inputs";
 import { VTypography } from "@/shared/components/data-display";
 import { isNonNullable } from "@/shared/utils/equal";
 import {
@@ -43,6 +54,7 @@ import {
   ApplicationFormSubLinks,
   EarlyTerminationInfo,
   useApplicationForm,
+  EditApplicationFormInfoView
 } from "@/features/application-forms";
 
 const applicationFormID = useParamID();
